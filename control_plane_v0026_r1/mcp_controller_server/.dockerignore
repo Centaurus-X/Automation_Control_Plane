@@ -1,0 +1,14 @@
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+.env
+.test-tmp
+runtime
+runtime-secrets
+secrets
+tests
+TEST_RESULTS.md
+SHA256SUMS
+*.zip

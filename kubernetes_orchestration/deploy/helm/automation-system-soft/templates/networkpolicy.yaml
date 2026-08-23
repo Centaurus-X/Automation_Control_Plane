@@ -1,0 +1,29 @@
+{{- if .Values.enabled }}
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: automation-system
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes: ["Ingress", "Egress"]
+  ingress: []
+  egress:
+    - ports:
+        {{- if .Values.mqtt.enabled }}
+        - {protocol: TCP, port: 8883}
+        {{- end }}
+        - {protocol: TCP, port: 502}
+        - {protocol: TCP, port: 5020}
+        - {protocol: TCP, port: 102}
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+{{- end }}
+
+{{- end }}

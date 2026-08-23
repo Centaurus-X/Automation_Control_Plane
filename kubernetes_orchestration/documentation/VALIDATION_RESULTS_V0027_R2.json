@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "release": "automation_control_plane_release_v0027_r2",
+  "validation_date": "2026-08-22",
+  "result": "pass_with_target_environment_gates_pending",
+  "preserved_control_plane": {
+    "archive_sha256": "ccddf6ed4c959bf17cad4041c68b683eccc0110702c6ae46987b220d07d2fb03",
+    "byte_identity": "pass",
+    "files": 588,
+    "manifest_entries": 587,
+    "json_parse": "pass",
+    "shell_syntax": "pass",
+    "static_suite": "partial_pass",
+    "static_suite_note": "The supplied suite passed through the Master checks. The Proxy section requires argon2 in the validation host and the official wrapper requires Docker. Neither dependency was available in this build environment."
+  },
+  "external_runtime": {
+    "archive_sha256": "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467",
+    "archive_validation": "pass",
+    "internal_manifest_validation": "pass",
+    "alternate_expected_digest_rejection": "pass",
+    "kubernetes_profile_site_node_binding": "pass",
+    "executable_tests_passed": 54,
+    "optional_test_skips": [
+      "python-snap7 connection-thread integration",
+      "python-snap7 PLC adapter emulator"
+    ]
+  },
+  "additive_orchestration_layer": {
+    "release_verifier": "pass",
+    "python_files_ast_checked": 26,
+    "json_files_parsed": 39,
+    "non_template_yaml_files_parsed": 35,
+    "shell_files_checked": 13,
+    "helm_charts_checked": 9,
+    "web_javascript_syntax": "pass",
+    "web_csp_and_dom_safety": "pass",
+    "test_suites": {
+      "planner_and_policy": "pass",
+      "journal_fencing_and_audit": "pass",
+      "provider_contract": "pass",
+      "wsgi_auth_csrf_and_plan": "pass",
+      "asynchronous_rollout_and_live_status": "pass",
+      "standalone_service_lifecycle": "pass"
+    }
+  },
+  "pending_target_environment_gates": [
+    "helm lint and template with the selected production Helm version",
+    "kubectl server-side dry-run and namespaced RBAC negative tests",
+    "container builds, registry push and manifest digest verification",
+    "fresh-cluster, N-1 upgrade, migration failure, PVC failure and rollback recovery",
+    "domain end-to-end and Worker safe-state tests under cluster and Fleet outages"
+  ],
+  "environment_limitations": [
+    "Docker was not installed",
+    "Helm was not installed",
+    "kubectl was not installed",
+    "No Kubernetes API server or container registry was available"
+  ]
+}

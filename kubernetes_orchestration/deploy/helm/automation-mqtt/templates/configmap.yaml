@@ -1,0 +1,94 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app.kubernetes.io/name: automation-mqtt
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+data:
+  mosquitto.conf: |
+    user mosquitto
+    listener 8883 0.0.0.0
+    protocol mqtt
+    listener_allow_anonymous false
+    cafile /run/secrets/mqtt_ca
+    certfile /run/secrets/mqtt_broker_cert
+    keyfile /run/secrets/mqtt_broker_key
+    require_certificate true
+    use_identity_as_username true
+    tls_version tlsv1.2
+    acl_file /mosquitto/config/acl.conf
+    allow_zero_length_clientid false
+    check_retain_source true
+    max_connections 512
+    max_keepalive 120
+    max_qos 1
+    max_packet_size 4194304
+    max_inflight_messages 20
+    max_queued_messages 4096
+    max_queued_bytes 16777216
+    queue_qos0_messages false
+    upgrade_outgoing_qos false
+    set_tcp_nodelay true
+    persistence true
+    persistence_location /mosquitto/data/
+    persistence_file mosquitto.db
+    autosave_interval 30
+    autosave_on_changes true
+    persistent_client_expiration 7d
+    log_dest stdout
+    log_timestamp true
+    log_type error
+    log_type warning
+    log_type notice
+    log_type information
+    connection_messages true
+    sys_interval 10
+  acl.conf: |
+    user urn:automation:{{ .Values.siteId }}:monitor:mqtt-health
+    topic read $SYS/broker/uptime
+
+    user urn:automation:{{ .Values.siteId }}:proxy:{{ .Values.proxyInstanceId }}
+    topic write automation/v1/{{ .Values.siteId }}/master/{{ .Values.masterInstanceId }}/commands/#
+    topic read automation/v1/{{ .Values.siteId }}/proxy/{{ .Values.proxyInstanceId }}/acks/#
+    topic read automation/v1/{{ .Values.siteId }}/events/+/{{ .Values.masterInstanceId }}
+
+    user urn:automation:{{ .Values.siteId }}:proxy:{{ .Values.mcpInstanceId }}
+    topic write automation/v1/{{ .Values.siteId }}/master/{{ .Values.masterInstanceId }}/commands/#
+    topic read automation/v1/{{ .Values.siteId }}/proxy/{{ .Values.mcpInstanceId }}/acks/#
+    topic read automation/v1/{{ .Values.siteId }}/events/+/{{ .Values.masterInstanceId }}
+
+    user urn:automation:{{ .Values.siteId }}:master:{{ .Values.masterInstanceId }}
+    topic read automation/v1/{{ .Values.siteId }}/master/{{ .Values.masterInstanceId }}/commands/#
+    topic write automation/v1/{{ .Values.siteId }}/proxy/{{ .Values.proxyInstanceId }}/acks/#
+    topic write automation/v1/{{ .Values.siteId }}/proxy/{{ .Values.mcpInstanceId }}/acks/#
+    topic readwrite automation/v1/{{ .Values.siteId }}/events/#
+    topic readwrite automation/v1/{{ .Values.siteId }}/nodes/{{ .Values.masterInstanceId }}/status
+    topic readwrite automation/v1/{{ .Values.siteId }}/nodes/{{ .Values.masterInstanceId }}/heartbeat
+    topic readwrite automation/v1/{{ .Values.siteId }}/nodes/{{ .Values.masterInstanceId }}/registration
+    topic readwrite automation/v1/{{ .Values.siteId }}/nodes/{{ .Values.masterInstanceId }}/config/state
+    topic read automation/v1/{{ .Values.siteId }}/nodes/{{ .Values.masterInstanceId }}/commands/#
+    topic read automation/v1/{{ .Values.siteId }}/nodes/{{ .Values.masterInstanceId }}/acks/#
+    topic read automation/v1/{{ .Values.siteId }}/nodes/+/heartbeat
+    topic write automation/v1/{{ .Values.siteId }}/nodes/+/commands/#
+    topic write automation/v1/{{ .Values.siteId }}/nodes/+/acks/#
+    topic readwrite automation/v1/{{ .Values.siteId }}/broadcast/commands/#
+    {{- range .Values.workerNodeIds }}
+
+    user urn:automation:{{ $.Values.siteId }}:worker:{{ . }}
+    topic write automation/v1/{{ $.Values.siteId }}/nodes/{{ . }}/status
+    topic write automation/v1/{{ $.Values.siteId }}/nodes/{{ . }}/heartbeat
+    topic write automation/v1/{{ $.Values.siteId }}/nodes/{{ . }}/registration
+    topic write automation/v1/{{ $.Values.siteId }}/nodes/{{ . }}/config/state
+    topic write automation/v1/{{ $.Values.siteId }}/events/+/{{ . }}
+    topic read automation/v1/{{ $.Values.siteId }}/events/sensor_value_update/{{ $.Values.masterInstanceId }}
+    topic write automation/v1/{{ $.Values.siteId }}/nodes/{{ $.Values.masterInstanceId }}/commands/#
+    topic write automation/v1/{{ $.Values.siteId }}/nodes/{{ $.Values.masterInstanceId }}/acks/#
+    topic read automation/v1/{{ $.Values.siteId }}/nodes/{{ . }}/commands/#
+    topic read automation/v1/{{ $.Values.siteId }}/nodes/{{ . }}/acks/#
+    topic read automation/v1/{{ $.Values.siteId }}/broadcast/commands/#
+    {{- end }}
+
+{{- end }}

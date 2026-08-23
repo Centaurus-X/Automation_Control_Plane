@@ -1,0 +1,23 @@
+postgresql:
+  enabled: true
+  mode: external
+  external:
+    host: postgresql.example.invalid
+    port: 5432
+    database: automation_platform
+mqtt:
+  enabled: false
+master:
+  enabled: false
+proxy:
+  enabled: false
+mcpController:
+  enabled: false
+automationSystem:
+  enabled: false
+fleet:
+  enabled: false
+clusterAgent:
+  enabled: false
+observability:
+  enabled: false

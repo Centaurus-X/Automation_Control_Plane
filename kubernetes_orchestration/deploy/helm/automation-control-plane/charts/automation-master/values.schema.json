@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["replicaCount", "image", "siteId", "masterInstanceId", "releaseProfile", "database", "mqtt", "secretRefs", "persistence", "networkPolicy"],
+  "properties": {
+    "enabled": {"type": "boolean"},
+    "replicaCount": {"const": 1},
+    "image": {"$ref": "#/definitions/image"},
+    "imagePullSecrets": {"type": "array"},
+    "siteId": {"$ref": "#/definitions/id"},
+    "masterInstanceId": {"$ref": "#/definitions/id"},
+    "releaseProfile": {"enum": ["lab_v2", "production_v2"]},
+    "database": {"type": "object", "additionalProperties": false, "required": ["host", "port", "name", "appUser", "migratorUser"], "properties": {"host": {"type": "string", "minLength": 1}, "port": {"type": "integer", "minimum": 1, "maximum": 65535}, "name": {"type": "string"}, "appUser": {"type": "string"}, "migratorUser": {"type": "string"}}},
+    "mqtt": {"type": "object", "additionalProperties": false, "required": ["host", "port", "required"], "properties": {"host": {"type": "string", "minLength": 1}, "port": {"type": "integer", "minimum": 1, "maximum": 65535}, "required": {"type": "boolean"}}},
+    "secretRefs": {"type": "object", "additionalProperties": false, "required": ["database", "mqtt", "initialConfig"], "properties": {"database": {"$ref": "#/definitions/name"}, "mqtt": {"$ref": "#/definitions/name"}, "initialConfig": {"$ref": "#/definitions/name"}}},
+    "persistence": {"type": "object", "additionalProperties": false, "required": ["size", "storageClassName"], "properties": {"size": {"type": "string"}, "storageClassName": {"type": "string"}}},
+    "resources": {"type": "object"},
+    "networkPolicy": {"type": "object", "additionalProperties": false, "required": ["enabled"], "properties": {"enabled": {"type": "boolean"}}},
+    "podAnnotations": {"type": "object"}
+  },
+  "allOf": [
+    {"if": {"required": ["enabled"], "properties": {"enabled": {"const": false}}}, "then": {}, "else": {"properties": {"image": {"properties": {"digest": {"not": {"const": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}}}}}}}
+  ],
+  "definitions": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$"},
+    "name": {"type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+    "image": {"type": "object", "additionalProperties": false, "required": ["repository", "digest", "pullPolicy"], "properties": {"repository": {"type": "string", "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._-]*|[A-Za-z0-9][A-Za-z0-9._-]*(?::[0-9]+)?(?:/[A-Za-z0-9][A-Za-z0-9._-]*)+)$"}, "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "pullPolicy": {"enum": ["IfNotPresent", "Always", "Never"]}}}
+  }
+}

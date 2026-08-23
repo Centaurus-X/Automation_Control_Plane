@@ -1,0 +1,269 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "automation-proxy-gateway-0.26.0-v0026-r1",
+  "documentNamespace": "https://automation.invalid/spdx/proxy-gateway/0.26.0/v0026-r1",
+  "creationInfo": {
+    "created": "2026-08-15T00:00:00Z",
+    "creators": [
+      "Tool: release-manifest"
+    ]
+  },
+  "packages": [
+    {
+      "name": "automation-proxy-gateway",
+      "SPDXID": "SPDXRef-Proxy",
+      "versionInfo": "0.26.0-v0026-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION"
+    },
+    {
+      "name": "python",
+      "SPDXID": "SPDXRef-Python",
+      "versionInfo": "3.14.6-slim-bookworm",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "PSF-2.0"
+    },
+    {
+      "name": "anyio",
+      "SPDXID": "SPDXRef-AnyIO",
+      "versionInfo": "4.14.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT"
+    },
+    {
+      "name": "argon2-cffi",
+      "SPDXID": "SPDXRef-Argon2",
+      "versionInfo": "25.1.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT"
+    },
+    {
+      "name": "argon2-cffi-bindings",
+      "SPDXID": "SPDXRef-Argon2Bindings",
+      "versionInfo": "25.1.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT"
+    },
+    {
+      "name": "cffi",
+      "SPDXID": "SPDXRef-Cffi",
+      "versionInfo": "2.1.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT"
+    },
+    {
+      "name": "click",
+      "SPDXID": "SPDXRef-Click",
+      "versionInfo": "8.2.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "BSD-3-Clause"
+    },
+    {
+      "name": "cryptography",
+      "SPDXID": "SPDXRef-Cryptography",
+      "versionInfo": "46.0.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "Apache-2.0 OR BSD-3-Clause"
+    },
+    {
+      "name": "h11",
+      "SPDXID": "SPDXRef-H11",
+      "versionInfo": "0.16.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT"
+    },
+    {
+      "name": "idna",
+      "SPDXID": "SPDXRef-Idna",
+      "versionInfo": "3.18",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "BSD-3-Clause"
+    },
+    {
+      "name": "pycparser",
+      "SPDXID": "SPDXRef-Pycparser",
+      "versionInfo": "3.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "BSD-3-Clause"
+    },
+    {
+      "name": "psycopg",
+      "SPDXID": "SPDXRef-Psycopg",
+      "versionInfo": "3.3.4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "LGPL-3.0-or-later"
+    },
+    {
+      "name": "psycopg-binary",
+      "SPDXID": "SPDXRef-PsycopgBinary",
+      "versionInfo": "3.3.4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "LGPL-3.0-or-later"
+    },
+    {
+      "name": "psycopg-pool",
+      "SPDXID": "SPDXRef-PsycopgPool",
+      "versionInfo": "3.3.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "LGPL-3.0-or-later"
+    },
+    {
+      "name": "starlette",
+      "SPDXID": "SPDXRef-Starlette",
+      "versionInfo": "1.3.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "BSD-3-Clause"
+    },
+    {
+      "name": "typing-extensions",
+      "SPDXID": "SPDXRef-TypingExtensions",
+      "versionInfo": "4.16.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "PSF-2.0"
+    },
+    {
+      "name": "uvicorn",
+      "SPDXID": "SPDXRef-Uvicorn",
+      "versionInfo": "0.51.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "BSD-3-Clause"
+    },
+    {
+      "name": "websockets",
+      "SPDXID": "SPDXRef-Websockets",
+      "versionInfo": "16.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "BSD-3-Clause"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Proxy"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Python"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-AnyIO"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Argon2"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Argon2Bindings"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Cffi"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Click"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Cryptography"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-H11"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Idna"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Pycparser"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Psycopg"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-PsycopgBinary"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-PsycopgPool"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Starlette"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-TypingExtensions"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Uvicorn"
+    },
+    {
+      "spdxElementId": "SPDXRef-Proxy",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Websockets"
+    }
+  ]
+}

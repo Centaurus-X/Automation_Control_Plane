@@ -1,0 +1,143 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "automation-control-plane-release-v0026-r1",
+  "documentNamespace": "https://automation.invalid/spdx/control-plane/0.26.0/v0026-r1",
+  "creationInfo": {
+    "created": "2026-08-15T00:00:00Z",
+    "creators": [
+      "Tool: release-manifest"
+    ]
+  },
+  "packages": [
+    {
+      "name": "automation-control-plane",
+      "SPDXID": "SPDXRef-ControlPlane",
+      "versionInfo": "0.26.0-v0026-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION"
+    },
+    {
+      "name": "automation-master-node",
+      "SPDXID": "SPDXRef-Master",
+      "versionInfo": "0.26.0-v0026-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION"
+    },
+    {
+      "name": "automation-proxy-gateway",
+      "SPDXID": "SPDXRef-Proxy",
+      "versionInfo": "0.26.0-v0026-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION"
+    },
+    {
+      "name": "automation-control-plane-validation",
+      "SPDXID": "SPDXRef-Validation",
+      "versionInfo": "0.26.0-v0026-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION"
+    },
+    {
+      "name": "automation-mcp-controller-server",
+      "SPDXID": "SPDXRef-MCPController",
+      "versionInfo": "0.1.0-v0001-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION"
+    },
+    {
+      "name": "automation-postgres",
+      "SPDXID": "SPDXRef-Postgres",
+      "versionInfo": "18.4-v14",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "PostgreSQL",
+      "licenseDeclared": "PostgreSQL"
+    },
+    {
+      "name": "eclipse-mosquitto",
+      "SPDXID": "SPDXRef-Mosquitto",
+      "versionInfo": "2.1.2-alpine",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "EPL-2.0"
+    },
+    {
+      "name": "CPython",
+      "SPDXID": "SPDXRef-Python",
+      "versionInfo": "3.14.6 free-threaded",
+      "downloadLocation": "https://www.python.org/ftp/python/3.14.6/Python-3.14.6.tar.xz",
+      "filesAnalyzed": false,
+      "licenseConcluded": "PSF-2.0",
+      "licenseDeclared": "PSF-2.0"
+    },
+    {
+      "name": "libpq",
+      "SPDXID": "SPDXRef-Libpq",
+      "versionInfo": "Debian bookworm libpq-dev/libpq5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "PostgreSQL",
+      "licenseDeclared": "PostgreSQL"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-ControlPlane"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Master"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Proxy"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Validation"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-MCPController"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Postgres"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Mosquitto"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Python"
+    },
+    {
+      "spdxElementId": "SPDXRef-ControlPlane",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Libpq"
+    }
+  ]
+}

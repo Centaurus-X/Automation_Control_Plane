@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "require_approval": true,
+  "require_distinct_approver": true,
+  "allow_database_automatic_rollback": false,
+  "allow_kubernetes_hard_rt": false,
+  "write_owner_transfer": "explicit-only",
+  "secret_policy": "references-only",
+  "allowed_write_owners": ["helm", "gitops_argocd", "gitops_flux"],
+  "max_agent_task_wait_s": 1800,
+  "field_manager": "automation-fleet-v0027-r3"
+}

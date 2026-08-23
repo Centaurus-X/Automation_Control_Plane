@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["replicaCount", "image", "runtimeArchiveDigest", "runtimeProfile", "automationProfile", "siteId", "nodeId", "mqtt", "secretRefs", "persistence", "networkPolicy"],
+  "properties": {
+    "enabled": {"type": "boolean"},
+    "replicaCount": {"const": 1},
+    "image": {"$ref": "#/definitions/image"},
+    "imagePullSecrets": {"type": "array"},
+    "runtimeArchiveDigest": {"type": "string", "const": "sha256:c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467"},
+    "runtimeProfile": {"enum": ["container_simulation", "kubernetes_soft_rt"]},
+    "automationProfile": {"enum": ["worker_simulation", "worker_fn02", "standalone"]},
+    "siteId": {"const": "site-main"},
+    "nodeId": {"enum": ["fn-01", "fn-02"]},
+    "mqtt": {"type": "object", "additionalProperties": false, "required": ["enabled"], "properties": {"enabled": {"type": "boolean"}}},
+    "secretRefs": {"type": "object", "additionalProperties": false, "required": ["mqtt"], "properties": {"mqtt": {"$ref": "#/definitions/name"}}},
+    "persistence": {"type": "object", "additionalProperties": false, "required": ["configSize", "stateSize", "storageClassName"], "properties": {"configSize": {"type": "string"}, "stateSize": {"type": "string"}, "storageClassName": {"type": "string"}}},
+    "resources": {"type": "object"},
+    "networkPolicy": {"type": "object", "additionalProperties": false, "required": ["enabled"], "properties": {"enabled": {"type": "boolean"}}},
+    "nodeSelector": {"type": "object"},
+    "tolerations": {"type": "array"},
+    "affinity": {"type": "object"},
+    "podAnnotations": {"type": "object"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"automationProfile": {"const": "standalone"}}},
+      "then": {"properties": {"mqtt": {"properties": {"enabled": {"const": false}}}, "nodeId": {"const": "fn-01"}}},
+      "else": {"properties": {"mqtt": {"properties": {"enabled": {"const": true}}}}}
+    },
+    {
+      "if": {"properties": {"automationProfile": {"const": "worker_fn02"}}},
+      "then": {"properties": {"nodeId": {"const": "fn-02"}, "runtimeProfile": {"const": "kubernetes_soft_rt"}}},
+      "else": {"properties": {"nodeId": {"const": "fn-01"}}}
+    },
+    {
+      "if": {"required": ["enabled"], "properties": {"enabled": {"const": false}}},
+      "then": {},
+      "else": {"properties": {"image": {"properties": {"digest": {"not": {"const": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}}}}}}
+    }
+  ],
+  "definitions": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$"},
+    "name": {"type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+    "image": {"type": "object", "additionalProperties": false, "required": ["repository", "digest", "pullPolicy"], "properties": {"repository": {"type": "string", "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._-]*|[A-Za-z0-9][A-Za-z0-9._-]*(?::[0-9]+)?(?:/[A-Za-z0-9][A-Za-z0-9._-]*)+)$"}, "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "pullPolicy": {"enum": ["IfNotPresent", "Always", "Never"]}}}
+  }
+}

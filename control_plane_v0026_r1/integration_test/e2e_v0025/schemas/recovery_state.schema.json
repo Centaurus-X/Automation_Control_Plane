@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "automation.control-plane.e2e.v0025/recovery_state.schema.json",
+  "title": "Automation Control Plane v0025 E2E recovery journal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "run_id",
+    "profile",
+    "site_id",
+    "node_id",
+    "principal_subject",
+    "cross_fixture_sha256",
+    "status",
+    "started_at",
+    "updated_at",
+    "secret_material_stored",
+    "config",
+    "actuator",
+    "cross_worker",
+    "api_token",
+    "worker_launcher",
+    "fn02_simulator"
+  ],
+  "properties": {
+    "version": {"const": "0.25.0-e2e.3"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "profile": {"enum": ["core", "full-lab"]},
+    "site_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+    "node_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+    "principal_subject": {"type": "string", "format": "uuid"},
+    "cross_fixture_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"enum": ["OPEN", "RECOVERING", "COMPLETED", "FAILED"]},
+    "started_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "secret_material_stored": {"const": false},
+    "config": {"$ref": "#/$defs/config"},
+    "actuator": {"$ref": "#/$defs/actuator"},
+    "cross_worker": {"$ref": "#/$defs/crossWorker"},
+    "api_token": {"$ref": "#/$defs/apiToken"},
+    "worker_launcher": {"$ref": "#/$defs/workerLauncher"},
+    "fn02_simulator": {"$ref": "#/$defs/fn02"},
+    "failure": {"type": ["string", "null"], "maxLength": 2048}
+  },
+  "$defs": {
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mutated", "restore_confirmed", "original_node_replicas"],
+      "properties": {
+        "mutated": {"type": "boolean"},
+        "original_revision": {"type": ["integer", "null"], "minimum": 0},
+        "latest_revision": {"type": ["integer", "null"], "minimum": 0},
+        "original_fingerprint": {"type": ["string", "null"], "maxLength": 128},
+        "latest_fingerprint": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "mutation_path": {
+          "type": ["string", "null"],
+          "pattern": "^controllers\\.[0-9]+\\.tags$"
+        },
+        "original_value": {},
+        "applied_value": {},
+        "owned_changes": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "original_value", "applied_value"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(controllers\\.[0-9]+\\.tags|sensors|actuators|(sensors|actuators)\\.[0-9]+\\.rows|processes\\.[0-9]+\\.process_location|process_states\\.[0-9]+\\.(mode_id|value_id)|process_states\\.[0-9]+\\.parameters\\.target_temp_c|rules\\.[0-9]+\\.when\\.[0-9]+\\.value)$"
+              },
+              "original_value": {},
+              "applied_value": {}
+            }
+          }
+        },
+        "restore_confirmed": {"type": "boolean"},
+        "original_node_replicas": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["revision", "fingerprint"],
+            "properties": {
+              "revision": {"type": "integer", "minimum": 0},
+              "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            }
+          }
+        }
+      }
+    },
+    "actuator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mutated", "target_descriptor", "restore_confirmed"],
+      "properties": {
+        "mutated": {"type": "boolean"},
+        "node_id": {"type": ["string", "null"], "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+        "controller_uuid": {"type": ["string", "null"], "format": "uuid"},
+        "actuator_id": {"type": ["integer", "string", "null"]},
+        "original_value": {},
+        "target_descriptor": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/modbusTargetDescriptor"}
+          ]
+        },
+        "restore_confirmed": {"type": "boolean"}
+      }
+    },
+    "modbusTargetDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bus_type",
+        "host",
+        "port",
+        "device_id",
+        "owner_node_id",
+        "controller_uuid",
+        "actuator_id",
+        "address",
+        "function_type"
+      ],
+      "properties": {
+        "bus_type": {"const": "modbus"},
+        "host": {"type": "string", "minLength": 1, "maxLength": 253},
+        "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "device_id": {"type": "integer", "minimum": 0, "maximum": 247},
+        "owner_node_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"
+        },
+        "controller_uuid": {"type": "string", "format": "uuid"},
+        "actuator_id": {
+          "oneOf": [
+            {"type": "integer"},
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            }
+          ]
+        },
+        "address": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "function_type": {"enum": ["write_coil", "write_register"]}
+      }
+    },
+    "crossWorker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "cross_site", "sensor_mutated", "sensor_restore_confirmed"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "cross_site": {"const": false},
+        "sensor_mutated": {"type": "boolean"},
+        "original_sensor_value": {"type": ["integer", "null"], "minimum": 0, "maximum": 65535},
+        "sensor_restore_confirmed": {"type": "boolean"}
+      }
+    },
+    "apiToken": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created", "revoked", "pending_names", "token_ids", "revoked_ids", "token_names"],
+      "properties": {
+        "created": {"type": "boolean"},
+        "token_id": {"type": ["string", "null"], "format": "uuid"},
+        "revoked": {"type": "boolean"},
+        "pending_names": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 200}
+        },
+        "token_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "format": "uuid"}
+        },
+        "revoked_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "format": "uuid"}
+        },
+        "token_names": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "format": "uuid"}
+        }
+      }
+    },
+    "workerLauncher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started", "restore_confirmed"],
+      "properties": {
+        "started": {"type": "boolean"},
+        "restore_confirmed": {"type": "boolean"},
+        "archive_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "fn02": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started", "stopped", "activated", "lock_id"],
+      "properties": {
+        "started": {"type": "boolean"},
+        "stopped": {"type": "boolean"},
+        "activated": {"type": "boolean"},
+        "previous_desired_state": {"type": ["string", "null"]},
+        "lock_id": {"type": ["string", "null"], "maxLength": 256},
+        "reservation_id": {"type": ["string", "null"], "minLength": 1, "maxLength": 256},
+        "reservation_source": {"type": ["string", "null"], "minLength": 1, "maxLength": 256},
+        "reservation_expires_at": {"type": ["string", "null"], "format": "date-time"},
+        "proof_signer_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "fixture_bootstrap_performed": {"type": "boolean"},
+        "expected_residual": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$root_dir"
+docker compose down --remove-orphans
+echo "MQTT Broker stopped; its persistent volume was preserved."

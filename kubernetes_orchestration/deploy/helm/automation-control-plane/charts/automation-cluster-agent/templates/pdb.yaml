@@ -1,0 +1,12 @@
+{{- if .Values.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-cluster-agent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

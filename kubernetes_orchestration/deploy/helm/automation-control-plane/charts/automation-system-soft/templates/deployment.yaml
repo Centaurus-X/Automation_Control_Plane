@@ -1,0 +1,148 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-system
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+    automation.openai.example/runtime-class: soft
+  annotations:
+    automation.openai.example/runtime-archive-digest: {{ .Values.runtimeArchiveDigest | quote }}
+    automation.openai.example/hard-real-time-qualified: "false"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy: {type: Recreate}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-system
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: automation-system
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/part-of: automation-platform
+        automation.openai.example/node-id: {{ .Values.nodeId | quote }}
+      annotations:
+        automation.openai.example/runtime-archive-digest: {{ .Values.runtimeArchiveDigest | quote }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 45
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: {type: RuntimeDefault}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: seed-config
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              if [ ! -f /config/.automation-v0101-initialized ]; then
+                cp -a /opt/automation-system/_config/config_data/. /config/
+                touch /config/.automation-v0101-initialized
+              fi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: config, mountPath: /config}
+            - {name: tmp, mountPath: /tmp}
+        {{- if .Values.mqtt.enabled }}
+        - name: stage-mqtt-identity
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              install -m 0644 /source/mqtt_ca.crt /staged/mqtt_ca.crt
+              install -m 0644 /source/tls.crt /staged/worker_{{ .Values.nodeId }}.crt
+              install -m 0600 /source/tls.key /staged/worker_{{ .Values.nodeId }}.key
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: mqtt-source, mountPath: /source, readOnly: true}
+            - {name: mqtt-runtime, mountPath: /staged}
+            - {name: tmp, mountPath: /tmp}
+        {{- end }}
+      containers:
+        - name: worker
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - {name: AUTOMATION_PROFILE, value: {{ .Values.automationProfile | quote }}}
+            - {name: AUTOMATION_SITE_ID, value: {{ .Values.siteId | quote }}}
+            - {name: AUTOMATION_NODE_ID, value: {{ .Values.nodeId | quote }}}
+            - {name: AUTOMATION_SKIP_PREFLIGHT, value: "0"}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            exec:
+              command: ["python3", "-m", "src.system.worker_preflight", "--json"]
+            failureThreshold: 12
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["python3", "-m", "src.system.worker_preflight", "--json"]
+            periodSeconds: 30
+            timeoutSeconds: 10
+          volumeMounts:
+            - {name: config, mountPath: /opt/automation-system/_config/config_data}
+            - {name: state, mountPath: /opt/automation-system/_runtime}
+            - {name: logs, mountPath: /opt/automation-system/logs}
+            {{- if .Values.mqtt.enabled }}
+            - {name: mqtt-runtime, mountPath: /opt/automation-system/_config/certs, readOnly: true}
+            {{- end }}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: config
+          persistentVolumeClaim: {claimName: {{ .Release.Name }}-config}
+        - name: state
+          persistentVolumeClaim: {claimName: {{ .Release.Name }}-state}
+        - name: logs
+          emptyDir: {sizeLimit: 1Gi}
+        {{- if .Values.mqtt.enabled }}
+        - name: mqtt-source
+          secret:
+            secretName: {{ .Values.secretRefs.mqtt }}
+            defaultMode: 0440
+        - name: mqtt-runtime
+          emptyDir: {medium: Memory, sizeLimit: 4Mi}
+        {{- end }}
+        - name: tmp
+          emptyDir: {medium: Memory, sizeLimit: 256Mi}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+{{- end }}

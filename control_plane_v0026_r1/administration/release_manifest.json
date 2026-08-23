@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "release": {
+    "name": "automation_control_plane_release",
+    "version": "0.26.0",
+    "revision": "v0026-r1"
+  },
+  "worker": {
+    "name": "automation_system",
+    "version": "0.101.0",
+    "revision": "v0101",
+    "artifact_id": "automation-system-v0101"
+  },
+  "compatibility": {
+    "node_storage": [
+      9
+    ],
+    "legacy_import": [
+      5
+    ],
+    "cross_storage": [
+      8
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "automation-system-v0101",
+      "path": "../automation_system_v0101.zip",
+      "sha256": "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467",
+      "manifest_sha256": "699c29f9cf58b1bd6bd7407e879b3b5b3f41ad978343037a1dc33a75ec25026d"
+    },
+    {
+      "artifact_id": "legacy-rollout-backend",
+      "path": "rollout_automation.sh",
+      "sha256": "eba6df8de38a271d1d764c68d0aefd63f00b4e58430aebfab5373a87da68b5e1"
+    },
+    {
+      "artifact_id": "status-hook",
+      "path": "status_all.sh",
+      "sha256": "3ba66049019b57f04977846a0558298d54e624e522d9eda89982f023f85f8e66"
+    },
+    {
+      "artifact_id": "running-test-hook",
+      "path": "test_running_all.sh",
+      "sha256": "518ffee6857f8d27867b8f53644c7bd65edb3c238af8b09b383d2351196b9804"
+    },
+    {
+      "artifact_id": "mcp-release-metadata",
+      "path": "mcp_controller_server/RELEASE_METADATA.json",
+      "sha256": "eacf522d72e32689645b0266f36dc1cbca5e0d6f9af25aff98564d2403e2f9d1"
+    },
+    {
+      "artifact_id": "mcp-component-manifest",
+      "path": "mcp_controller_server/SHA256SUMS",
+      "sha256": "8f1af7785368112710671aa12e434ad31b59d2839870eb1c6c4425410c08f839"
+    },
+    {
+      "artifact_id": "mcp-static-test-hook",
+      "path": "mcp_controller_server/test_all.sh",
+      "sha256": "e5d26075c24934a9491e2e76cc6dc0b0ef524161771383bfab400512486428a2"
+    }
+  ],
+  "legacy_backend": {
+    "path": "rollout_automation.sh",
+    "sha256": "eba6df8de38a271d1d764c68d0aefd63f00b4e58430aebfab5373a87da68b5e1",
+    "component_order": [
+      "database",
+      "mqtt",
+      "master",
+      "proxy",
+      "mcp_controller_server",
+      "worker"
+    ]
+  },
+  "required_tests": [
+    "static",
+    "readiness",
+    "mcp-static-contract",
+    "mcp-mqtt-boundary",
+    "mcp-readiness",
+    "config-file-commit",
+    "native-client-proxy-mqtt-master-worker-diff-commit",
+    "client-proxy-master-worker-modbus",
+    "restart-recovery",
+    "worker-tia-s7-emulator",
+    "worker-thread-pool-resilience"
+  ]
+}

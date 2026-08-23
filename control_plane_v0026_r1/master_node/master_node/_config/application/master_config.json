@@ -1,0 +1,149 @@
+{
+  "site_id": "site-main",
+  "instance_id": "master-01",
+  "legacy_coordinator_node_id": "master-01",
+  "release_profile": "lab_v2",
+  "authority_mode": "node_local",
+  "leader_eligible": true,
+  "control": {
+    "allowed_proxy_instance_ids": [
+      "proxy-01",
+      "mcp-controller-01"
+    ]
+  },
+  "worker_compatibility": {
+    "trust_broker_acl_identity": true,
+    "auto_admit_broker_bound_workers": true,
+    "identity_proof_max_age_s": 45.0,
+    "allowed_worker_node_ids": [
+      "fn-01"
+    ]
+  },
+  "distributed": {
+    "protocol_version": "automation.distributed.v2",
+    "contracts_version": "2.0",
+    "v0082_full_fallback": true,
+    "patch_operation_limit": 500,
+    "chunk_transfer_ttl_s": 3600
+  },
+  "worker_file_proposals": {
+    "enabled": true,
+    "max_operations": 128,
+    "allow_deletes": true,
+    "allowed_sections": [
+      "actuator_types",
+      "actuators",
+      "control_method_templates",
+      "control_methods",
+      "controllers",
+      "filters",
+      "local_node",
+      "modbus_functions",
+      "nodes",
+      "parameter_generic_templates",
+      "pid_configs",
+      "process_modes",
+      "process_states",
+      "process_values",
+      "processes",
+      "rule_engine",
+      "rules",
+      "scaling_profiles",
+      "schema_mappings",
+      "sensor_types",
+      "sensors",
+      "site_controller_map",
+      "sites",
+      "timers",
+      "virtual_controllers"
+    ]
+  },
+  "initial_config_path": "_config/application/initial_config_v9.json",
+  "authority": {
+    "term_floor": 0,
+    "lease_s": 15.0,
+    "renew_interval_s": 5.0,
+    "ownership_lease_s": 30.0,
+    "ownership_interval_s": 10.0,
+    "node_timeout_s": 45.0
+  },
+  "mqtt": {
+    "host": "mqtt-broker",
+    "port": 8883,
+    "required": true,
+    "keepalive_s": 30,
+    "connect_timeout_s": 5.0,
+    "socket_timeout_s": 2.0,
+    "reconnect_min_s": 1.0,
+    "reconnect_max_s": 30.0,
+    "command_queue_maxsize": 512,
+    "outbound_queue_maxsize": 4096,
+    "max_packet_size": 4194304,
+    "allow_insecure_transport": false,
+    "tls": {
+      "enabled": true,
+      "ca_file": "/run/secrets/mqtt_ca",
+      "cert_file": "/run/secrets/master_mqtt_cert",
+      "key_file": "/run/secrets/master_mqtt_key",
+      "server_hostname": "mqtt-broker",
+      "insecure_skip_verify": false
+    }
+  },
+  "outbox": {
+    "batch_size": 64,
+    "retry_s": 2.0,
+    "command_ttl_s": 60.0
+  },
+  "cross_routing": {
+    "max_signal_age_s": 30.0
+  },
+  "retention": {
+    "maintenance_interval_s": 300.0,
+    "heartbeat_days": 7,
+    "message_days": 30,
+    "batch_size": 2000
+  },
+  "metrics": {
+    "host": "0.0.0.0",
+    "port": 9090
+  },
+  "config_policy": {
+    "max_changes": 128,
+    "allowed_prefixes": [
+      "actuator_types",
+      "actuators",
+      "control_method_templates",
+      "control_methods",
+      "controllers",
+      "filters",
+      "local_node",
+      "modbus_functions",
+      "nodes",
+      "parameter_generic_templates",
+      "pid_configs",
+      "process_modes",
+      "process_states",
+      "process_values",
+      "processes",
+      "rule_engine",
+      "rules",
+      "scaling_profiles",
+      "schema_mappings",
+      "sensor_types",
+      "sensors",
+      "site_controller_map",
+      "sites",
+      "timers",
+      "virtual_controllers"
+    ],
+    "denied_prefixes": [
+      "certificates",
+      "credentials",
+      "secrets",
+      "tls"
+    ]
+  },
+  "logging": {
+    "level": "INFO"
+  }
+}

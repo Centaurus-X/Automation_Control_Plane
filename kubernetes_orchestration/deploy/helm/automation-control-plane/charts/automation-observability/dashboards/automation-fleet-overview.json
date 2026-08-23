@@ -1,0 +1,20 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "panels": [
+    {"type": "stat", "title": "Healthy targets", "id": 1, "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0}, "targets": [{"refId": "A", "expr": "automation_fleet_targets_healthy"}]},
+    {"type": "stat", "title": "Unreachable targets", "id": 2, "gridPos": {"h": 6, "w": 6, "x": 6, "y": 0}, "targets": [{"refId": "A", "expr": "automation_fleet_targets_unreachable"}]},
+    {"type": "stat", "title": "Online agents", "id": 3, "gridPos": {"h": 6, "w": 6, "x": 12, "y": 0}, "targets": [{"refId": "A", "expr": "automation_fleet_agents_online"}]},
+    {"type": "stat", "title": "Audit chain", "id": 4, "gridPos": {"h": 6, "w": 6, "x": 18, "y": 0}, "targets": [{"refId": "A", "expr": "automation_fleet_audit_chain_valid"}]},
+    {"type": "timeseries", "title": "Plan states", "id": 5, "gridPos": {"h": 9, "w": 12, "x": 0, "y": 6}, "targets": [{"refId": "A", "expr": "automation_fleet_plans", "legendFormat": "{{status}}"}]},
+    {"type": "timeseries", "title": "Fleet health", "id": 6, "gridPos": {"h": 9, "w": 12, "x": 12, "y": 6}, "targets": [{"refId": "A", "expr": "automation_fleet_targets_healthy", "legendFormat": "healthy"}, {"refId": "B", "expr": "automation_fleet_targets_degraded", "legendFormat": "degraded"}, {"refId": "C", "expr": "automation_fleet_targets_unreachable", "legendFormat": "unreachable"}]}
+  ],
+  "schemaVersion": 39,
+  "tags": ["automation", "kubernetes", "fleet"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "timezone": "browser",
+  "title": "Automation Fleet Overview",
+  "uid": "automation-fleet-overview",
+  "version": 1
+}

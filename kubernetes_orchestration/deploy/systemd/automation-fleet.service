@@ -1,0 +1,37 @@
+[Unit]
+Description=Automation Fleet Kubernetes Orchestration Point
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=automation-fleet
+Group=automation-fleet
+WorkingDirectory=/opt/automation-control-plane/kubernetes_orchestration
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONNOUSERSITE=1
+Environment=PYTHONPATH=/opt/automation-control-plane/kubernetes_orchestration/src
+Environment=FLEET_CONFIG_FILE=/etc/automation-fleet/fleet.json
+Environment=FLEET_STATE_DIR=/var/lib/automation-fleet
+Environment=FLEET_ALLOW_MUTATIONS=0
+ExecStartPre=/usr/bin/python3 -m automation_fleet.cli --root /opt/automation-control-plane/kubernetes_orchestration --config /etc/automation-fleet/fleet.json validate
+ExecStart=/usr/bin/python3 -m automation_fleet.cli --root /opt/automation-control-plane/kubernetes_orchestration --config /etc/automation-fleet/fleet.json serve
+KillSignal=SIGTERM
+TimeoutStopSec=35
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/automation-fleet
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictNamespaces=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

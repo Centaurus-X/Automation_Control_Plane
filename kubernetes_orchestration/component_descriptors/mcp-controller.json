@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "mcp-controller",
+  "providers": ["docker_compose", "kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": ["mqtt", "master"], "hard_runtime": ["mqtt"], "soft_runtime": ["master"], "management": [], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["network-policy"]},
+  "health_contract": {"live": "/health/live", "ready": "/health/ready", "port": 8080},
+  "rollback_contract": {"application_reversible": true, "state_reversible": true},
+  "security_contract": {"database_access": false, "direct_worker_access": false, "read_only_root_filesystem": true, "capabilities_drop_all": true}
+}

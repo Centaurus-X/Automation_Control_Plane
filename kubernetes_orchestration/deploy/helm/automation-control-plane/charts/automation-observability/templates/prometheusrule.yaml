@@ -1,0 +1,59 @@
+{{- if .Values.enabled }}
+{{- if .Values.prometheusOperator.rulesEnabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-observability
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+spec:
+  groups:
+    - name: automation-fleet
+      rules:
+        - alert: AutomationFleetTargetUnreachable
+          expr: automation_fleet_targets_unreachable > 0
+          for: 2m
+          labels: {severity: critical}
+          annotations:
+            summary: Automation Fleet target is unreachable
+            runbook: kubernetes_orchestration/documentation/BETRIEBSANLEITUNG_DE.md
+        - alert: AutomationFleetTargetDegraded
+          expr: automation_fleet_targets_degraded > 0
+          for: 5m
+          labels: {severity: warning}
+          annotations:
+            summary: Automation Fleet target is degraded
+            runbook: kubernetes_orchestration/documentation/BETRIEBSANLEITUNG_DE.md
+        - alert: AutomationFleetAgentOffline
+          expr: automation_fleet_agents_registered - automation_fleet_agents_online > 0
+          for: 2m
+          labels: {severity: critical}
+          annotations:
+            summary: An outbound Automation Fleet cluster agent is offline
+            runbook: kubernetes_orchestration/documentation/RUNBOOK_AGENTEN_UND_GITOPS_DE.md
+        - alert: AutomationFleetPlanFailed
+          expr: sum(automation_fleet_plans{status=~"FAILED|MANUAL_RECOVERY"}) > 0
+          for: 1m
+          labels: {severity: critical}
+          annotations:
+            summary: An Automation Fleet rollout needs intervention
+            runbook: kubernetes_orchestration/documentation/BETRIEBSANLEITUNG_DE.md
+        - alert: AutomationFleetRolloutApprovalPending
+          expr: sum(automation_fleet_plans{status="WAVE_APPROVAL_REQUIRED"}) > 0
+          for: 30m
+          labels: {severity: warning}
+          annotations:
+            summary: A rollout wave has been waiting for approval
+            runbook: kubernetes_orchestration/documentation/BETRIEBSANLEITUNG_DE.md
+        - alert: AutomationFleetAuditChainInvalid
+          expr: automation_fleet_audit_chain_valid != 1
+          for: 1m
+          labels: {severity: critical}
+          annotations:
+            summary: The Automation Fleet audit hash chain does not verify
+            runbook: kubernetes_orchestration/documentation/SICHERHEITSMODELL_DE.md
+{{- end }}
+
+{{- end }}

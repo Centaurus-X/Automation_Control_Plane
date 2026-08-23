@@ -1,0 +1,6 @@
+apiVersion: v2
+name: automation-observability
+description: Non-RT OpenTelemetry and optional Prometheus monitoring for Automation components
+type: application
+version: 0.27.3
+appVersion: "0.136.0"

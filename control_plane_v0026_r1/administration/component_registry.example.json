@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "execution_mode": "component_adapters",
+  "required_component_order": [
+    "database",
+    "mqtt",
+    "master",
+    "proxy",
+    "mcp_controller_server",
+    "worker"
+  ],
+  "adapter_action": {
+    "command": [
+      "python3",
+      "{release_root}/administration/component_adapter.py",
+      "--release-root",
+      "{release_root}",
+      "--state-dir",
+      "{state_dir}",
+      "--action",
+      "{action}",
+      "--component",
+      "{component}",
+      "--target-id",
+      "{target_id}",
+      "--host",
+      "{host}",
+      "--node-id",
+      "{node_id}",
+      "--target-options",
+      "{target_options}",
+      "--worker-archive",
+      "{worker_archive}",
+      "--plan-id",
+      "{plan_id}",
+      "--step-id",
+      "{step_id}",
+      "--idempotency-key",
+      "{idempotency_key}",
+      "--fencing-token",
+      "{fencing_token}"
+    ],
+    "timeout_s": 600,
+    "idempotent": true
+  },
+  "components": {
+    "database": {
+      "depends_on": [],
+      "target_role": "control_plane",
+      "rollout_strategy": "serial",
+      "reversible": false,
+      "actions": {
+        "preflight": {
+          "timeout_s": 120
+        },
+        "backup": {
+          "timeout_s": 1800
+        },
+        "apply": {
+          "timeout_s": 3600
+        },
+        "ready": {
+          "timeout_s": 600
+        },
+        "status": {
+          "timeout_s": 300
+        },
+        "test": {
+          "timeout_s": 3600
+        },
+        "restart": {
+          "timeout_s": 900
+        }
+      }
+    },
+    "mqtt": {
+      "depends_on": [
+        "database"
+      ],
+      "target_role": "control_plane",
+      "rollout_strategy": "serial",
+      "reversible": true,
+      "actions": {
+        "preflight": {
+          "timeout_s": 120
+        },
+        "backup": {
+          "timeout_s": 600
+        },
+        "apply": {
+          "timeout_s": 1800
+        },
+        "ready": {
+          "timeout_s": 600
+        },
+        "status": {
+          "timeout_s": 300
+        },
+        "test": {
+          "timeout_s": 1800
+        },
+        "restart": {
+          "timeout_s": 900
+        },
+        "rollback": {
+          "timeout_s": 1800
+        }
+      }
+    },
+    "master": {
+      "depends_on": [
+        "mqtt"
+      ],
+      "target_role": "control_plane",
+      "rollout_strategy": "serial",
+      "reversible": true,
+      "actions": {
+        "preflight": {
+          "timeout_s": 120
+        },
+        "backup": {
+          "timeout_s": 600
+        },
+        "apply": {
+          "timeout_s": 1800
+        },
+        "ready": {
+          "timeout_s": 600
+        },
+        "status": {
+          "timeout_s": 300
+        },
+        "test": {
+          "timeout_s": 1800
+        },
+        "restart": {
+          "timeout_s": 900
+        },
+        "rollback": {
+          "timeout_s": 1800
+        }
+      }
+    },
+    "proxy": {
+      "depends_on": [
+        "master"
+      ],
+      "target_role": "control_plane",
+      "rollout_strategy": "serial",
+      "reversible": true,
+      "actions": {
+        "preflight": {
+          "timeout_s": 120
+        },
+        "backup": {
+          "timeout_s": 600
+        },
+        "apply": {
+          "timeout_s": 1800
+        },
+        "ready": {
+          "timeout_s": 600
+        },
+        "status": {
+          "timeout_s": 300
+        },
+        "test": {
+          "timeout_s": 1800
+        },
+        "restart": {
+          "timeout_s": 900
+        },
+        "rollback": {
+          "timeout_s": 1800
+        }
+      }
+    },
+    "mcp_controller_server": {
+      "depends_on": [
+        "proxy"
+      ],
+      "target_role": "control_plane",
+      "rollout_strategy": "serial",
+      "reversible": true,
+      "actions": {
+        "preflight": {
+          "timeout_s": 300
+        },
+        "backup": {
+          "timeout_s": 900
+        },
+        "apply": {
+          "timeout_s": 3600
+        },
+        "ready": {
+          "timeout_s": 600
+        },
+        "status": {
+          "timeout_s": 300
+        },
+        "test": {
+          "timeout_s": 1800
+        },
+        "restart": {
+          "timeout_s": 900
+        },
+        "rollback": {
+          "timeout_s": 1800
+        }
+      }
+    },
+    "worker": {
+      "depends_on": [
+        "mcp_controller_server"
+      ],
+      "target_role": "worker",
+      "rollout_strategy": "canary_batches",
+      "reversible": true,
+      "actions": {
+        "preflight": {
+          "timeout_s": 180
+        },
+        "backup": {
+          "timeout_s": 1800
+        },
+        "apply": {
+          "timeout_s": 3600
+        },
+        "ready": {
+          "timeout_s": 600
+        },
+        "status": {
+          "timeout_s": 300
+        },
+        "test": {
+          "timeout_s": 1800
+        },
+        "restart": {
+          "timeout_s": 1800
+        },
+        "rollback": {
+          "timeout_s": 1800
+        }
+      }
+    }
+  },
+  "operations": {
+    "status": {
+      "command": [
+        "{release_root}/status_all.sh"
+      ],
+      "timeout_s": 600,
+      "idempotent": true
+    },
+    "test": {
+      "command": [
+        "{release_root}/test_running_all.sh"
+      ],
+      "timeout_s": 3600,
+      "idempotent": true
+    }
+  },
+  "legacy_full": {
+    "apply": {
+      "command": [
+        "{legacy_backend}",
+        "run",
+        "--release",
+        "{release_root}",
+        "--worker-archive",
+        "{worker_archive}"
+      ],
+      "timeout_s": 14400,
+      "idempotent": false
+    },
+    "ready": {
+      "command": [
+        "{release_root}/status_all.sh"
+      ],
+      "timeout_s": 600,
+      "idempotent": true
+    },
+    "test": {
+      "command": [
+        "{release_root}/test_running_all.sh"
+      ],
+      "timeout_s": 3600,
+      "idempotent": true
+    }
+  }
+}

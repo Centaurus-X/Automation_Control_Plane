@@ -1,0 +1,54 @@
+name: Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install validation dependency
+        run: python -m pip install PyYAML==6.0.3
+      - name: Reconstruct canonical release root
+        shell: bash
+        run: |
+          expected="$RUNNER_TEMP/automation_control_plane_release_v0027_r3"
+          mkdir -p "$expected"
+          git archive HEAD | tar -x -C "$expected"
+          find "$expected" -type f -name '*.sh' -exec chmod 0755 {} +
+          printf '%s\n' "$expected" > "$RUNNER_TEMP/release-root"
+      - name: Complete release verification
+        shell: bash
+        run: |
+          expected="$(cat "$RUNNER_TEMP/release-root")"
+          cd "$expected"
+          bash ./test_release.sh
+          sha256sum -c SHA256SUMS
+
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check repository metadata and Mermaid sources
+        shell: bash
+        run: |
+          test "$(tr -d '\r\n' < VERSION)" = "0.27.3"
+          test "$(tr -d '\r\n' < RELEASE_REVISION)" = "v0027-r3"
+          test -s docs/diagrams/control-plane-components.mmd
+          test -s docs/assets/control-plane-architecture.svg

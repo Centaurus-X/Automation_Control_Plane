@@ -1,0 +1,70 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-observability
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-observability
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: automation-observability
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/part-of: automation-platform
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: collector
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["--config=/etc/otelcol/collector.yaml"]
+          {{- if .Values.remoteWrite.enabled }}
+          env:
+            - name: REMOTE_WRITE_AUTHORIZATION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.remoteWrite.authSecretRef }}
+                  key: authorization
+          {{- end }}
+          ports:
+            - {name: metrics, containerPort: 8889, protocol: TCP}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            tcpSocket: {port: metrics}
+            periodSeconds: 15
+          readinessProbe:
+            tcpSocket: {port: metrics}
+            periodSeconds: 10
+          volumeMounts:
+            - {name: config, mountPath: /etc/otelcol, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: config
+          configMap: {name: {{ .Release.Name }}-config}
+        - name: tmp
+          emptyDir: {medium: Memory, sizeLimit: 64Mi}
+
+{{- end }}

@@ -1,0 +1,42 @@
+AUTOMATION CONTROL PLANE 0.26.0 / v0026-r1
+QUALIFIKATIONSSTAND: 2026-08-15
+
+PASS  Eingangsarchive und bereitgestellte SHA-256-Sidecars:
+      Control Plane v0025-r1 und MCP Controller v0001-r1.
+PASS  ZIP-CRC, Pfadsicherheit, reguläre Dateitypen, keine Symlinks,
+      keine Duplikate und keine verschlüsselten Einträge.
+PASS  Additive Bestandserhaltung: 482/482 Control-Plane-Baselinedateien und
+      84/84 MCP-Baselinedateien sind im v0026-Baum vorhanden.
+PASS  Releaseweite Funktionsstandards: 0 Klassen, 0 Decorators, 0 Lambdas,
+      0 shell=True und 0 bare except in 234 Python-Dateien; zusätzlich
+      7 eingebettete Python-Heredocs geprüft.
+PASS  Vollständige Syntax-/Formatprüfung für Python, 129 Shellskripte,
+      JSON, YAML, TOML, SVG/XML und UTF-8-Textdateien.
+PASS  Master 40/40 ausführbare Testdateien.
+PASS  Proxy 17/17 ausführbare Testdateien.
+PASS  MCP Controller 20/20 dependency-freie Funktions-/Vertragstests sowie
+      Referenzabgleich gegen die Control-Plane-Verträge.
+PASS  MCP-Bundle-Gate: dedizierte mTLS-Identität, ACL, Master-Allowlist,
+      Auth-Secrets, Lifecycle und Sechs-Komponenten-Orchestrierung.
+PASS  Administration-Orchestrator 27/27 Szenarien einschließlich MCP,
+      Resume, Locks, Fencing, Idempotenz, Evidence und Rollback.
+PASS  Rollout-, Bootstrap-, SSH-Reconnect-, Worker-Installer-, Recovery-,
+      WAL-, Lifecycle-, Image-Staging-, Upgrade- und Modus-Gates.
+PASS  E2E-v0025-Static-Gates, Core-Ergebnisprüfung und File-E2E-Verträge.
+PASS  Root-, Komponenten- und aktives E2E-SHA-256-Manifest vollständig.
+PASS  Release-Builder, reproduzierbare ZIP-Metadaten, Archivbaum, CRC,
+      ausführbare Modi und Secret-/Transient-Ausschluss.
+PASS  MCP-Placeholder-Token CHANGE_ME_* wird fail-closed abgewiesen.
+
+SKIP  Der gepinnte Cross-Artifact-Test gegen automation_system_v0101.zip
+      wurde in diesem Merge-Lauf nicht erneut ausgeführt, weil Worker-ZIP und
+      Sidecar nicht bereitgestellt wurden. Der Builder bleibt standardmäßig
+      fail-closed; das finale Paket wurde ausschließlich mit dem expliziten,
+      nur bei beidseitiger Abwesenheit erlaubten Packaging-Override erzeugt.
+
+NICHT LIVE AUSFÜHRBAR IN DER ERSTELLUNGSUMGEBUNG:
+      Docker-/Compose-Build und Start, MQTT-mTLS live, PostgreSQL
+      Primary/Standby live, HTTPS/WSS, MCP-HTTP über den Ziel-TLS-Pfad,
+      Worker-SSH/Admission/Telemetrie, Modbus/S7/Hardware sowie vollständiges
+      Live-Core-/File-E2E und reales Backup/Restore. Diese Punkte bleiben
+      verbindliche Zielhost-Gates und werden nicht als PASS umetikettiert.

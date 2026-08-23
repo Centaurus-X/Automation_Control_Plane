@@ -1,0 +1,23 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "name": "automation-mqtt-broker-0.14.0",
+  "documentNamespace": "https://automation.invalid/sbom/mqtt-broker/0.14.0",
+  "creationInfo": {
+    "created": "2026-07-14T00:00:00Z",
+    "creators": ["Tool: release-build"]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-Mosquitto",
+      "name": "eclipse-mosquitto",
+      "versionInfo": "2.1.2-alpine",
+      "downloadLocation": "https://hub.docker.com/_/eclipse-mosquitto",
+      "filesAnalyzed": false,
+      "licenseConcluded": "EPL-2.0 OR EDL-1.0",
+      "licenseDeclared": "EPL-2.0 OR EDL-1.0",
+      "supplier": "Organization: Eclipse Foundation"
+    }
+  ]
+}

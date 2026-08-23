@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Automation Fleet</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <section id="login-panel" class="login-shell" aria-labelledby="login-title">
+    <div class="login-card">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="eyebrow">Kubernetes Orchestration Point</p>
+      <h1 id="login-title">Automation Fleet</h1>
+      <p class="subtle">Sichere Verwaltung, Rollouts und Live-Überwachung – getrennt von der lokalen Worker-Authority.</p>
+      <form id="login-form">
+        <label for="login-token">Operator-Token</label>
+        <input id="login-token" name="token" type="password" autocomplete="current-password" required minlength="32">
+        <button class="button button-primary" type="submit">Sitzung öffnen</button>
+      </form>
+      <p id="login-error" class="form-error" role="alert"></p>
+      <div class="security-note"><span class="status-dot status-ok"></span>Same-Origin · HttpOnly Session · CSRF-gebunden</div>
+    </div>
+  </section>
+
+  <div id="app-shell" class="app-shell is-hidden">
+    <aside class="sidebar">
+      <div class="brand-row">
+        <div class="brand-mark brand-mark-small" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div><strong>Automation</strong><small>Fleet v0027-r3</small></div>
+      </div>
+      <nav aria-label="Hauptnavigation">
+        <button class="nav-item is-active" data-view="overview"><span>◫</span>Übersicht</button>
+        <button class="nav-item" data-view="workloads"><span>▦</span>Workloads</button>
+        <button class="nav-item" data-view="rollouts"><span>⇅</span>Rollouts</button>
+        <button class="nav-item" data-view="agents"><span>◎</span>Agenten</button>
+        <button class="nav-item" data-view="audit"><span>⌁</span>Audit</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="identity"><span id="role-badge" class="role-badge">VIEWER</span><small>aktive Sitzung</small></div>
+        <button id="logout-button" class="button button-quiet" type="button">Abmelden</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Environment</p>
+          <h1 id="environment-title">–</h1>
+        </div>
+        <div class="topbar-actions">
+          <span id="mutation-badge" class="mode-badge">READ ONLY</span>
+          <span id="last-updated" class="last-updated">Noch nicht synchronisiert</span>
+          <button id="refresh-button" class="icon-button" type="button" aria-label="Aktualisieren">↻</button>
+        </div>
+      </header>
+
+      <div id="global-error" class="global-error is-hidden" role="alert"></div>
+
+      <section id="view-overview" class="view">
+        <div class="section-head">
+          <div><p class="eyebrow">Live Health</p><h2>Systemüberblick</h2></div>
+          <div id="overall-health" class="health-pill"><span class="status-dot"></span><span>Unbekannt</span></div>
+        </div>
+        <div id="metric-grid" class="metric-grid"></div>
+        <div class="panel topology-panel">
+          <div class="panel-head"><div><p class="eyebrow">Multi-Cluster</p><h3>Fleet-Topologie</h3></div><span class="subtle">Live über Kubernetes API</span></div>
+          <div id="topology-grid" class="topology-grid"></div>
+        </div>
+      </section>
+
+      <section id="view-workloads" class="view is-hidden">
+        <div class="section-head"><div><p class="eyebrow">Runtime View</p><h2>Workloads</h2></div></div>
+        <div class="panel table-panel">
+          <div class="filter-row">
+            <label for="workload-filter">Filter</label>
+            <input id="workload-filter" type="search" placeholder="Name, Kind oder Cluster">
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Status</th><th>Ressource</th><th>Kind</th><th>Target</th><th>Bereit</th></tr></thead>
+              <tbody id="workload-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-rollouts" class="view is-hidden">
+        <div class="section-head">
+          <div><p class="eyebrow">Immutable Operations</p><h2>Plan & Rollout</h2></div>
+          <span class="subtle">Validieren → Planen → Freigeben → Ausführen</span>
+        </div>
+        <div class="rollout-layout">
+          <div class="panel editor-panel">
+            <div class="panel-head"><h3>Desired State</h3><span id="editor-state" class="mini-badge">JSON</span></div>
+            <label class="sr-only" for="desired-editor">Desired State JSON</label>
+            <textarea id="desired-editor" spellcheck="false"></textarea>
+            <div class="button-row">
+              <button id="plan-button" class="button button-primary" type="button">Plan erzeugen</button>
+              <button id="reset-desired-button" class="button button-secondary" type="button">Zurücksetzen</button>
+            </div>
+          </div>
+          <div class="panel plan-panel">
+            <div class="panel-head"><h3>Planvorschau</h3><span id="plan-status" class="mini-badge">Kein Plan</span></div>
+            <div id="plan-summary" class="empty-state">Noch kein Plan erzeugt.</div>
+            <div id="plan-actions" class="button-row is-hidden">
+              <button id="approve-button" class="button button-secondary" type="button">Exakt freigeben</button>
+              <button id="approve-wave-button" class="button button-secondary" type="button">Nächste Welle freigeben</button>
+              <button id="apply-button" class="button button-danger" type="button">Rollout starten</button>
+              <button id="pause-button" class="button button-secondary" type="button">Pausieren</button>
+              <button id="rollback-button" class="button button-quiet" type="button">Rollback</button>
+              <button id="evidence-button" class="button button-quiet" type="button">Evidence exportieren</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel table-panel">
+          <div class="panel-head"><h3>Journalierte Pläne</h3><span class="subtle">Neueste zuerst</span></div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Status</th><th>Plan-ID</th><th>Freigabe</th><th>Aktualisiert</th><th>Aktion</th></tr></thead>
+              <tbody id="plans-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-agents" class="view is-hidden">
+        <div class="section-head"><div><p class="eyebrow">Outbound-only</p><h2>Cluster-Agenten</h2></div><span class="subtle">Lease-Fencing · signierte Tasks · keine eingehenden Cluster-Ports</span></div>
+        <div class="panel table-panel">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Status</th><th>Target</th><th>Holder</th><th>Epoche</th><th>Lease bis</th><th>Capabilities</th></tr></thead>
+              <tbody id="agents-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-audit" class="view is-hidden">
+        <div class="section-head"><div><p class="eyebrow">Hash Chain</p><h2>Audit & Evidence</h2></div></div>
+        <div class="panel table-panel">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>#</th><th>Ereignis</th><th>Bezug</th><th>Record-Hash</th><th>Zeit</th></tr></thead>
+              <tbody id="audit-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast is-hidden" role="status" aria-live="polite"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

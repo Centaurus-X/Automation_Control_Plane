@@ -1,0 +1,24 @@
+enabled: true
+image:
+  repository: otel/opentelemetry-collector-contrib
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+scrape:
+  master: automation-master:9090
+  fleet: automation-fleet:9080
+prometheusOperator:
+  serviceMonitorEnabled: false
+  rulesEnabled: false
+grafana:
+  dashboardEnabled: false
+remoteWrite:
+  enabled: false
+  endpoint: https://prometheus.example.invalid/api/v1/write
+  port: 443
+  authSecretRef: ""
+resources:
+  requests: {cpu: 100m, memory: 128Mi}
+  limits: {cpu: 1, memory: 512Mi}
+networkPolicy:
+  enabled: true

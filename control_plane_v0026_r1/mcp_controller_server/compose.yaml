@@ -1,0 +1,67 @@
+name: automation-mcp-controller
+
+services:
+  mcp-controller-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MCP_CONTROLLER_IMAGE:-automation-mcp-controller-server:0.1.0}
+    restart: unless-stopped
+    stop_grace_period: 20s
+    environment:
+      AUTOMATION_SITE_ID: ${AUTOMATION_SITE_ID:-site-main}
+      MASTER_INSTANCE_ID: ${MASTER_INSTANCE_ID:-master-01}
+      MCP_MQTT_SOURCE_INSTANCE_ID: ${MCP_MQTT_SOURCE_INSTANCE_ID:-mcp-controller-01}
+      MQTT_HOST: ${MQTT_HOST:-mqtt-broker}
+      MQTT_PORT: ${MQTT_PORT:-8883}
+      MQTT_SERVER_HOSTNAME: ${MQTT_SERVER_HOSTNAME:-mqtt-broker}
+      MQTT_CA_FILE: /run/secrets/mqtt_ca
+      MCP_MQTT_CERT_FILE: /run/secrets/mcp_mqtt_cert
+      MCP_MQTT_KEY_FILE: /run/secrets/mcp_mqtt_key
+      MCP_AUTH_FILE: /run/secrets/mcp_auth
+    ports:
+      - "${MCP_BIND_ADDRESS:-127.0.0.1}:${MCP_HTTP_PORT:-8080}:8080"
+    secrets:
+      - mqtt_ca
+      - mcp_mqtt_cert
+      - mcp_mqtt_key
+      - mcp_auth
+    volumes:
+      - mcp_controller_state:/app/state
+    networks:
+      - control_egress
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=2).read()"
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 20s
+
+volumes:
+  mcp_controller_state:
+
+networks:
+  control_egress:
+    external: true
+    name: automation_control
+
+secrets:
+  mqtt_ca:
+    file: ./runtime-secrets/mqtt_ca.crt
+  mcp_mqtt_cert:
+    file: ./runtime-secrets/mcp_mqtt.crt
+  mcp_mqtt_key:
+    file: ./runtime-secrets/mcp_mqtt.key
+  mcp_auth:
+    file: ./runtime-secrets/mcp_auth.json

@@ -1,0 +1,29 @@
+# Dokumentationsbeispiel; wird nicht automatisch in den Worker geschrieben.
+# Diese Werte müssen in das tatsächlich verwendete Worker-Profil gemerged werden.
+
+app:
+  node_id: "fn-01"
+  site_id: "site_main"
+
+mqtt_interface:
+  enabled: true
+  required: true
+  topic_prefix: "automation/v1"
+  transport:
+    host: "192.168.0.82"
+    port: 8883
+    allow_insecure_transport: false
+    tls:
+      enabled: true
+      ca_file: "_config/certs/mqtt_ca.crt"
+      cert_file: "_config/certs/worker_fn-01.crt"
+      key_file: "_config/certs/worker_fn-01.key"
+      server_hostname: "mqtt-broker"
+      insecure_skip_verify: false
+
+distributed_runtime:
+  enabled: true
+  role: "worker"
+  coordinator_node_id: "master-01"
+  require_hardware_readback: true
+  allow_retry_after_uncertain: false

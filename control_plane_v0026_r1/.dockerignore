@@ -1,0 +1,15 @@
+**
+!.dockerignore
+!requirements-validation.txt
+!runtime/
+!runtime/validation/
+!runtime/validation/Dockerfile
+!master_node/
+!master_node/requirements.txt
+!proxy_gateway/
+!proxy_gateway/requirements.txt
+!proxy_gateway/tools/
+!proxy_gateway/tools/check_python_dependencies.py
+!integration_test/
+!integration_test/e2e_v0025/
+!integration_test/e2e_v0025/requirements-e2e.txt

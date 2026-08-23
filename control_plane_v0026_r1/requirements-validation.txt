@@ -1,0 +1,11 @@
+# Pinned validation-container environment. Component runtime requirements stay
+# owned by their packages; pip resolves this file in one image-build transaction.
+-r master_node/requirements.txt
+-r proxy_gateway/requirements.txt
+-r integration_test/e2e_v0025/requirements-e2e.txt
+
+# Exact transitive closure not already owned by the Proxy runtime manifest.
+attrs==26.1.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==2026.6.3

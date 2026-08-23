@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Centaurus-X/Automation_Control_Plane/security/advisories/new
+    about: Report security issues privately.
+  - name: Questions and architecture
+    url: https://github.com/Centaurus-X/Automation_Control_Plane/discussions
+    about: Discuss rollout, authority, GitOps, agents and target acceptance.

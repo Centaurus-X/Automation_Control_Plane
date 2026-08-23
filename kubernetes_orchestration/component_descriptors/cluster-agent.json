@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "cluster-agent",
+  "providers": ["kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": [], "management": ["automation-fleet"], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["network-policy"]},
+  "health_contract": {"mode": "outbound-heartbeat-and-signed-observation", "lease": "coordination.k8s.io/v1"},
+  "rollback_contract": {"application_reversible": true, "queued_tasks_reversible": false},
+  "security_contract": {"outbound_only": true, "per_target_token": true, "namespace_scoped": true, "lease_fencing": true}
+}

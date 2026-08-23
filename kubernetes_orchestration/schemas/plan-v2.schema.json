@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:automation:fleet:plan:v2",
+  "title": "Immutable Automation Fleet Multi-Provider Plan v2",
+  "type": "object",
+  "required": ["schema_version", "plan_id", "release_id", "deployment_id", "environment_id", "inventory_digest", "catalog_digest", "desired_digest", "policy_digest", "component_descriptor_digests", "provider", "provider_contract_version", "component_order", "target_order", "placement", "placement_decisions", "rollout", "waves", "risk_summary", "approval_required", "approval_policy", "steps"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "plan_id": {"$ref": "#/$defs/digest"},
+    "release_id": {"type": "string"},
+    "deployment_id": {"type": "string"},
+    "environment_id": {"type": "string"},
+    "inventory_digest": {"$ref": "#/$defs/digest"},
+    "catalog_digest": {"$ref": "#/$defs/digest"},
+    "desired_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "component_descriptor_digests": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/digest"}},
+    "provider": {"enum": ["kubernetes_helm", "gitops_argocd", "gitops_flux", "mixed"]},
+    "provider_contract_version": {"const": 2},
+    "component_order": {"type": "array", "items": {"type": "string"}},
+    "target_order": {"type": "array", "items": {"type": "string"}},
+    "placement": {"type": "object"},
+    "placement_decisions": {"type": "array", "minItems": 1},
+    "rollout": {"type": "object"},
+    "waves": {"type": "array", "minItems": 1},
+    "risk_summary": {"type": "object"},
+    "approval_required": {"const": true},
+    "approval_policy": {"type": "object", "required": ["distinct_principal", "per_wave"], "properties": {"distinct_principal": {"const": true}, "per_wave": {"type": "boolean"}}, "additionalProperties": false},
+    "steps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/step"}}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "step": {
+      "type": "object",
+      "required": ["step_id", "order", "wave", "target_id", "site_id", "failure_domain", "cluster_id", "context", "namespace", "write_owner", "execution_mode", "target_generation", "component_id", "provider", "provider_contract_version", "field_manager", "release_name", "chart", "chart_digest", "descriptor", "descriptor_digest", "values", "effective_values_digest", "operation", "idempotency_key", "timeout_s"],
+      "properties": {
+        "step_id": {"type": "string"}, "order": {"type": "integer", "minimum": 1}, "wave": {"type": "integer", "minimum": 0},
+        "target_id": {"type": "string"}, "site_id": {"type": "string"}, "failure_domain": {"type": "string"}, "cluster_id": {"type": "string"}, "context": {"type": "string"}, "namespace": {"type": "string"},
+        "write_owner": {"enum": ["helm", "gitops_argocd", "gitops_flux"]}, "execution_mode": {"enum": ["direct", "agent"]},
+        "target_generation": {"$ref": "#/$defs/digest"}, "component_id": {"type": "string"}, "provider": {"enum": ["kubernetes_helm", "gitops_argocd", "gitops_flux"]}, "provider_contract_version": {"const": 2}, "field_manager": {"type": "string"},
+        "release_name": {"type": "string"}, "chart": {"type": "string"}, "chart_digest": {"$ref": "#/$defs/digest"}, "descriptor": {"type": "string"}, "descriptor_digest": {"$ref": "#/$defs/digest"},
+        "values": {"type": "object"}, "effective_values_digest": {"$ref": "#/$defs/digest"},
+        "operation": {"enum": ["discover", "validate_target", "render", "diff", "preflight", "backup", "apply", "wait_ready", "verify"]},
+        "idempotency_key": {"$ref": "#/$defs/digest"}, "timeout_s": {"type": "integer", "minimum": 1, "maximum": 3600}, "agent_task_timeout_s": {"type": "integer"}, "gitops": {"type": "object"}
+      }
+    }
+  }
+}

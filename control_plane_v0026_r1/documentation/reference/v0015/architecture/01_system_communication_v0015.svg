@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1080" viewBox="0 0 1700 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Automation Control Plane v0015 – primäre WSS-Kommunikation</title>
+  <desc id="desc">Direkter websockets-Listener auf Port 8443, HTTP-only Uvicorn auf Port 8444, Broker, Master, Datenbank, Worker und fn-02-Testsimulator.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#334155"/></marker>
+    <style>
+      .title{font:700 34px Inter,Arial,sans-serif;fill:#0f172a}.subtitle{font:400 17px Inter,Arial,sans-serif;fill:#475569}
+      .bt{font:700 20px Inter,Arial,sans-serif;fill:#0f172a}.body{font:400 15px Inter,Arial,sans-serif;fill:#334155}.small{font:500 13px Inter,Arial,sans-serif;fill:#475569}.label{font:600 13px Inter,Arial,sans-serif;fill:#334155}
+      .edge{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#arrow)}.both{fill:none;stroke:#334155;stroke-width:3;marker-start:url(#arrow);marker-end:url(#arrow)}.dash{fill:none;stroke:#64748b;stroke-width:3;stroke-dasharray:8 6;marker-end:url(#arrow)}.future{fill:none;stroke:#94a3b8;stroke-width:2.5;stroke-dasharray:8 6;marker-end:url(#arrow)}
+      .client{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.proxy{fill:#ecfeff;stroke:#0891b2;stroke-width:2}.proxybox{fill:#f0fdfa;stroke:#0f766e;stroke-width:3}.core{fill:#ecfdf5;stroke:#15803d;stroke-width:2}.broker{fill:#fff7ed;stroke:#ea580c;stroke-width:2}.store{fill:#faf5ff;stroke:#7e22ce;stroke-width:2}.worker{fill:#fefce8;stroke:#a16207;stroke-width:2}.sim{fill:#f8fafc;stroke:#64748b;stroke-width:2;stroke-dasharray:7 5}.note{fill:#fff7ed;stroke:#f97316;stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1700" height="1080" fill="#fff"/>
+  <text x="55" y="60" class="title">Automation Control Plane v0015</text>
+  <text x="55" y="92" class="subtitle">WSS ist der primäre Clientpfad; Uvicorn bleibt als strikt HTTP-only Sekundärschnittstelle bestehen.</text>
+
+  <rect x="45" y="365" width="235" height="170" rx="18" class="client"/>
+  <text x="162" y="405" text-anchor="middle" class="bt">Client / HMI</text>
+  <text x="162" y="442" text-anchor="middle" class="body"><tspan x="162">WSS Commands</tspan><tspan x="162" dy="24">WSS Events / Replay</tspan><tspan x="162" dy="24">HTTPS optional</tspan></text>
+
+  <rect x="340" y="160" width="480" height="575" rx="24" class="proxybox"/>
+  <text x="580" y="200" text-anchor="middle" class="bt">Proxy Gateway v0015 · ein Prozess</text>
+  <rect x="375" y="235" width="190" height="125" rx="15" class="proxy"/>
+  <text x="470" y="270" text-anchor="middle" class="bt">websockets</text>
+  <text x="470" y="300" text-anchor="middle" class="body"><tspan x="470">:8443 /ws/v1/events</tspan><tspan x="470" dy="22">Subscribe · Replay</tspan></text>
+  <rect x="595" y="235" width="190" height="125" rx="15" class="proxy"/>
+  <text x="690" y="270" text-anchor="middle" class="bt">websockets</text>
+  <text x="690" y="300" text-anchor="middle" class="body"><tspan x="690">:8443 /ws/v1/control</tspan><tspan x="690" dy="22">command.request</tspan></text>
+  <rect x="375" y="395" width="190" height="120" rx="15" class="proxy"/>
+  <text x="470" y="432" text-anchor="middle" class="bt">Uvicorn</text>
+  <text x="470" y="462" text-anchor="middle" class="body"><tspan x="470">:8444 HTTPS</tspan><tspan x="470" dy="22">ws = none</tspan></text>
+  <rect x="595" y="395" width="190" height="120" rx="15" class="core"/>
+  <text x="690" y="432" text-anchor="middle" class="bt">Shared Security</text>
+  <text x="690" y="462" text-anchor="middle" class="body"><tspan x="690">Auth · CSRF · RBAC</tspan><tspan x="690" dy="22">Rate Limit · Audit</tspan></text>
+  <rect x="375" y="555" width="410" height="135" rx="16" class="core"/>
+  <text x="580" y="593" text-anchor="middle" class="bt">Gemeinsamer Proxy Core</text>
+  <text x="580" y="624" text-anchor="middle" class="body"><tspan x="580">transportneutraler Dispatcher · Command Gateway</tspan><tspan x="580" dy="23">Event Stream · PostgreSQL Replay · eine MQTTS-Verbindung</tspan></text>
+
+  <rect x="890" y="355" width="220" height="190" rx="28" class="broker"/>
+  <text x="1000" y="397" text-anchor="middle" class="bt">Mosquitto</text>
+  <text x="1000" y="430" text-anchor="middle" class="body"><tspan x="1000">MQTTS · mTLS</tspan><tspan x="1000" dy="23">QoS 1 · ACL</tspan><tspan x="1000" dy="23">gemeinsamer Broker</tspan></text>
+
+  <rect x="1190" y="155" width="285" height="245" rx="18" class="core"/>
+  <text x="1332" y="195" text-anchor="middle" class="bt">Master Node</text>
+  <text x="1332" y="230" text-anchor="middle" class="body"><tspan x="1332">Config Authority</tspan><tspan x="1332" dy="23">Registry · Ownership</tspan><tspan x="1332" dy="23">Routing · Fencing</tspan><tspan x="1332" dy="23">Node-/Cross-Rollout</tspan><tspan x="1332" dy="23">keine Automation</tspan></text>
+  <rect x="1510" y="180" width="160" height="200" rx="18" class="store"/>
+  <text x="1590" y="220" text-anchor="middle" class="bt">PostgreSQL</text>
+  <text x="1590" y="255" text-anchor="middle" class="body"><tspan x="1590">Config</tspan><tspan x="1590" dy="23">Outbox</tspan><tspan x="1590" dy="23">Sessions</tspan><tspan x="1590" dy="23">Audit / Replay</tspan></text>
+
+  <rect x="1160" y="620" width="260" height="185" rx="18" class="worker"/>
+  <text x="1290" y="660" text-anchor="middle" class="bt">Worker fn-01 v0082</text>
+  <text x="1290" y="695" text-anchor="middle" class="body"><tspan x="1290">Node Hardware-Owner</tspan><tspan x="1290" dy="23">Cross nur externer Test-Overlay</tspan><tspan x="1290" dy="23">lokale RuleEngine</tspan><tspan x="1290" dy="23">unverändertes Paket</tspan></text>
+  <rect x="1450" y="620" width="220" height="185" rx="18" class="worker"/>
+  <text x="1560" y="650" text-anchor="middle" class="bt"><tspan x="1560">Future Worker</tspan><tspan x="1560" dy="23">fn-02</tspan></text>
+  <text x="1560" y="710" text-anchor="middle" class="body"><tspan x="1560">nicht Teil des v0015-E2E</tspan><tspan x="1560" dy="23">Hardware-Owner später</tspan><tspan x="1560" dy="23">separate reale Abnahme</tspan></text>
+  <rect x="890" y="680" width="220" height="155" rx="18" class="sim"/>
+  <text x="1000" y="718" text-anchor="middle" class="bt">fn-02 Simulator</text>
+  <text x="1000" y="750" text-anchor="middle" class="body"><tspan x="1000">nur E2E-Protokoll</tspan><tspan x="1000" dy="23">simulierter Readback</tspan><tspan x="1000" dy="23">kein realer Worker</tspan></text>
+  <rect x="1160" y="875" width="260" height="90" rx="15" class="worker"/>
+  <text x="1290" y="912" text-anchor="middle" class="bt">Modbus fn-01</text><text x="1290" y="942" text-anchor="middle" class="body">echter Write + Readback</text>
+  <rect x="1450" y="875" width="220" height="90" rx="15" class="worker"/>
+  <text x="1560" y="912" text-anchor="middle" class="bt">Modbus fn-02</text><text x="1560" y="942" text-anchor="middle" class="body">spätere reale Abnahme</text>
+
+  <path d="M280 390C320 390 330 320 375 320" class="both"/><text x="305" y="346" class="label">Subscribe / Events</text>
+  <path d="M280 445C400 445 485 330 595 330" class="both"/><text x="405" y="402" class="label">WSS Control / Result</text>
+  <path d="M280 505C320 505 340 470 375 455" class="dash"/><text x="288" y="540" class="label">HTTPS optional</text>
+  <path d="M500 555C340 520 340 410 470 360" class="edge"/><text x="348" y="455" class="small">events</text>
+  <path d="M690 360V395" class="edge"/><path d="M470 515L520 555" class="edge"/><path d="M690 515L640 555" class="edge"/>
+  <path d="M820 622C850 600 865 520 890 485" class="both"/><text x="850" y="575" class="label">MQTTS</text>
+  <path d="M1110 405L1190 325" class="both"/><text x="1130" y="350" class="label">MQTTS</text>
+  <path d="M1475 275H1510" class="both"/><text x="1492" y="260" text-anchor="middle" class="label">TLS SQL</text>
+  <path d="M820 675C980 790 1420 500 1515 380" class="both"/><text x="1110" y="580" text-anchor="middle" class="small">Proxy Stores: Sessions · Audit · Commands · Replay</text>
+  <path d="M970 545C1010 600 1120 665 1160 700" class="both"/>
+  <path d="M1040 545C1160 600 1370 625 1450 700" class="future"/>
+  <path d="M1000 545V680" class="both"/>
+  <path d="M1290 805V875" class="both"/><path d="M1560 805V875" class="future"/>
+  <path d="M1160 742C1090 730 1080 635 1040 545" class="dash"/><text x="1092" y="680" class="small">Cross intent via Master</text>
+
+  <rect x="45" y="785" width="750" height="205" rx="18" class="note"/>
+  <text x="75" y="825" class="bt">Normative Grenzen</text>
+  <text x="75" y="860" class="body"><tspan x="75">• Nur das Modul websockets bindet Port 8443; Uvicorn läuft mit ws=none auf Port 8444.</tspan><tspan x="75" dy="27">• Events und terminale Ergebnisse bleiben replay-fähig auf /ws/v1/events.</tspan><tspan x="75" dy="27">• Der fn-02-Simulator beweist Cross-Worker-Protokollintegration, aber weder echten Feldbus noch Cross-Site.</tspan><tspan x="75" dy="27">• Master, Broker und Worker v0082 bleiben fachlich unverändert.</tspan></text>
+</svg>

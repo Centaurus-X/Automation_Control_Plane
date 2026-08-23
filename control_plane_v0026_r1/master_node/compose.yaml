@@ -1,0 +1,124 @@
+name: automation-master
+
+x-master-environment: &master-environment
+  AUTOMATION_SITE_ID: ${AUTOMATION_SITE_ID:-site-main}
+  MASTER_INSTANCE_ID: ${MASTER_INSTANCE_ID:-master-01}
+  LEGACY_COORDINATOR_NODE_ID: ${LEGACY_COORDINATOR_NODE_ID:-master-01}
+  MASTER_RELEASE_PROFILE: ${MASTER_RELEASE_PROFILE:-lab_v2}
+  MASTER_INITIAL_CONFIG_PATH: /run/secrets/master_initial_config
+  MASTER_AUTO_ADMIT_BROKER_BOUND_WORKERS: ${MASTER_AUTO_ADMIT_BROKER_BOUND_WORKERS:-true}
+  MASTER_IDENTITY_PROOF_MAX_AGE_S: ${MASTER_IDENTITY_PROOF_MAX_AGE_S:-45.0}
+  MASTER_AUTHORITY_TERM_FLOOR: ${MASTER_AUTHORITY_TERM_FLOOR:-0}
+  MQTT_HOST: ${MQTT_HOST:-mqtt-broker}
+  MQTT_PORT: ${MQTT_PORT:-8883}
+  MQTT_REQUIRED: ${MQTT_REQUIRED:-true}
+  MASTER_MQTT_MAX_PACKET_SIZE: ${MASTER_MQTT_MAX_PACKET_SIZE:-4194304}
+  MQTT_TLS_ENABLED: ${MQTT_TLS_ENABLED:-true}
+  MQTT_ALLOW_INSECURE_TRANSPORT: ${MQTT_ALLOW_INSECURE_TRANSPORT:-false}
+  MASTER_DB_HOST: automation-postgres
+  MASTER_DB_PORT: "5432"
+  MASTER_DB_NAME: automation_platform
+  MASTER_DB_USER: master_app
+  MASTER_DB_PASSWORD_FILE: /run/secrets/master_db_password
+  MASTER_DB_SSLMODE: verify-full
+  MASTER_DB_SSLROOTCERT: /run/secrets/postgres_ca
+
+services:
+  master-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_RUNTIME_IMAGE: ${PYTHON_RUNTIME_IMAGE:-automation-python-free-threaded:3.14.6-v14}
+    image: ${MASTER_IMAGE:-automation-master-node:0.26.0}
+    command: ["python", "-m", "migration_main"]
+    restart: "no"
+    environment:
+      MASTER_MIGRATOR_DB_HOST: automation-postgres
+      MASTER_MIGRATOR_DB_PORT: "5432"
+      MASTER_MIGRATOR_DB_NAME: automation_platform
+      MASTER_MIGRATOR_DB_USER: master_migrator
+      MASTER_MIGRATOR_DB_PASSWORD_FILE: /run/secrets/master_migrator_password
+      MASTER_MIGRATOR_DB_SSLMODE: verify-full
+      MASTER_MIGRATOR_DB_SSLROOTCERT: /run/secrets/postgres_ca
+    secrets:
+      - master_migrator_password
+      - postgres_ca
+    networks:
+      - database_private
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  master-node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_RUNTIME_IMAGE: ${PYTHON_RUNTIME_IMAGE:-automation-python-free-threaded:3.14.6-v14}
+    image: ${MASTER_IMAGE:-automation-master-node:0.26.0}
+    restart: unless-stopped
+    stop_grace_period: 30s
+    environment: *master-environment
+    ports:
+      - "${MASTER_METRICS_BIND:-127.0.0.1}:9090:9090"
+    secrets:
+      - master_db_password
+      - postgres_ca
+      - mqtt_ca
+      - master_mqtt_cert
+      - master_mqtt_key
+      - master_initial_config
+    volumes:
+      - master_runtime:/app/master_node/_runtime
+    networks:
+      - database_private
+      - control_egress
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=256m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9090/health/ready', timeout=2).read()"
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 20s
+
+volumes:
+  master_runtime:
+
+networks:
+  database_private:
+    external: true
+    name: automation_database
+  control_egress:
+    external: true
+    name: automation_control
+
+secrets:
+  master_db_password:
+    file: ./secrets/master_db_password
+  master_migrator_password:
+    file: ./secrets/master_migrator_password
+  postgres_ca:
+    file: ./secrets/postgres_ca.crt
+  mqtt_ca:
+    file: ./secrets/mqtt_ca.crt
+  master_mqtt_cert:
+    file: ./secrets/master_mqtt.crt
+  master_mqtt_key:
+    file: ./secrets/master_mqtt.key
+  master_initial_config:
+    file: ${MASTER_INITIAL_CONFIG_FILE:-./master_node/_config/application/initial_config_v9.json}

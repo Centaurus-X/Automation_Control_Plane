@@ -1,0 +1,32 @@
+{{- if .Values.enabled }}
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: automation-observability
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes: ["Ingress", "Egress"]
+  ingress:
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - {protocol: TCP, port: 8889}
+  egress:
+    - ports:
+        - {protocol: TCP, port: 9090}
+        - {protocol: TCP, port: 9080}
+        {{- if .Values.remoteWrite.enabled }}
+        - {protocol: TCP, port: {{ .Values.remoteWrite.port }}}
+        {{- end }}
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+{{- end }}
+
+{{- end }}

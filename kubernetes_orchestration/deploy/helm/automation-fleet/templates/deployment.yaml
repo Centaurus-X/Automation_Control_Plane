@@ -1,0 +1,133 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-fleet
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy: {type: Recreate}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-fleet
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: automation-fleet
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/part-of: automation-platform
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      automountServiceAccountToken: true
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: stage-auth
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              install -m 0600 /source/admin.token /staged/admin.token
+              install -m 0600 /source/operator.token /staged/operator.token
+              install -m 0600 /source/approver.token /staged/approver.token
+              install -m 0600 /source/auditor.token /staged/auditor.token
+              install -m 0600 /source/viewer.token /staged/viewer.token
+              {{- if .Values.secretRefs.agentTokens }}
+              for source in /agent-source/*; do
+                install -m 0600 "$source" "/agent-staged/$(basename "$source")"
+              done
+              {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: auth-source, mountPath: /source, readOnly: true}
+            - {name: auth-runtime, mountPath: /staged}
+            {{- if .Values.secretRefs.agentTokens }}
+            - {name: agent-token-source, mountPath: /agent-source, readOnly: true}
+            - {name: agent-token-runtime, mountPath: /agent-staged}
+            {{- end }}
+            - {name: tmp, mountPath: /tmp}
+      containers:
+        - name: fleet
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["--config", "/etc/automation-fleet/fleet.json", "serve"]
+          env:
+            - {name: FLEET_ALLOW_MUTATIONS, value: {{ ternary "1" "0" .Values.allowMutations | quote }}}
+            - {name: FLEET_COOKIE_SECURE, value: {{ ternary "1" "0" .Values.cookieSecure | quote }}}
+            - {name: HELM_DRIVER, value: configmap}
+          ports:
+            - {name: http, containerPort: 9080, protocol: TCP}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet: {path: /api/v1/health/ready, port: http}
+            failureThreshold: 12
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /api/v1/health/live, port: http}
+            periodSeconds: 15
+          readinessProbe:
+            httpGet: {path: /api/v1/health/ready, port: http}
+            periodSeconds: 10
+          volumeMounts:
+            - {name: config, mountPath: /etc/automation-fleet, readOnly: true}
+            - {name: auth-runtime, mountPath: /run/secrets, readOnly: true}
+            {{- if .Values.secretRefs.agentTokens }}
+            - {name: agent-token-runtime, mountPath: /run/agent-tokens, readOnly: true}
+            {{- end }}
+            - {name: state, mountPath: /var/lib/automation-fleet}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: config
+          configMap: {name: {{ .Release.Name }}-config}
+        - name: auth-source
+          secret:
+            secretName: {{ .Values.secretRefs.auth }}
+            defaultMode: 0440
+            items:
+              - {key: admin.token, path: admin.token}
+              - {key: operator.token, path: operator.token}
+              - {key: approver.token, path: approver.token}
+              - {key: auditor.token, path: auditor.token}
+              - {key: viewer.token, path: viewer.token}
+        - name: auth-runtime
+          emptyDir: {medium: Memory, sizeLimit: 1Mi}
+        {{- if .Values.secretRefs.agentTokens }}
+        - name: agent-token-source
+          secret:
+            secretName: {{ .Values.secretRefs.agentTokens }}
+            defaultMode: 0440
+        - name: agent-token-runtime
+          emptyDir: {medium: Memory, sizeLimit: 1Mi}
+        {{- end }}
+        - name: state
+          persistentVolumeClaim: {claimName: {{ .Release.Name }}-state}
+        - name: tmp
+          emptyDir: {medium: Memory, sizeLimit: 128Mi}
+
+{{- end }}

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "execution_mode": "legacy_full_once",
+  "required_component_order": [
+    "database",
+    "mqtt",
+    "master",
+    "proxy",
+    "mcp_controller_server",
+    "worker"
+  ],
+  "components": {
+    "database": {
+      "depends_on": [],
+      "target_role": "control_plane",
+      "reversible": false
+    },
+    "mqtt": {
+      "depends_on": [
+        "database"
+      ],
+      "target_role": "control_plane",
+      "reversible": false
+    },
+    "master": {
+      "depends_on": [
+        "mqtt"
+      ],
+      "target_role": "control_plane",
+      "reversible": false
+    },
+    "proxy": {
+      "depends_on": [
+        "master"
+      ],
+      "target_role": "control_plane",
+      "reversible": false
+    },
+    "mcp_controller_server": {
+      "depends_on": [
+        "proxy"
+      ],
+      "target_role": "control_plane",
+      "reversible": false
+    },
+    "worker": {
+      "depends_on": [
+        "mcp_controller_server"
+      ],
+      "target_role": "worker",
+      "reversible": false
+    }
+  },
+  "legacy_full": {
+    "apply": {
+      "command": [
+        "{legacy_backend}",
+        "run",
+        "--release",
+        "{release_root}",
+        "--worker-archive",
+        "{worker_archive}"
+      ],
+      "timeout_s": 14400,
+      "idempotent": false
+    },
+    "ready": {
+      "command": [
+        "{release_root}/status_all.sh"
+      ],
+      "timeout_s": 600,
+      "idempotent": true
+    },
+    "test": {
+      "command": [
+        "{release_root}/test_running_all.sh"
+      ],
+      "timeout_s": 3600,
+      "idempotent": true
+    }
+  },
+  "operations": {
+    "status": {
+      "command": [
+        "{release_root}/status_all.sh"
+      ],
+      "timeout_s": 600,
+      "idempotent": true
+    },
+    "test": {
+      "command": [
+        "{release_root}/test_running_all.sh"
+      ],
+      "timeout_s": 3600,
+      "idempotent": true
+    }
+  }
+}

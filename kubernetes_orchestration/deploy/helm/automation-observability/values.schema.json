@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["image", "scrape", "prometheusOperator", "grafana", "remoteWrite", "networkPolicy"],
+  "properties": {
+    "enabled": {"type": "boolean"},
+    "image": {"$ref": "#/definitions/image"},
+    "imagePullSecrets": {"type": "array"},
+    "scrape": {"type": "object", "additionalProperties": false, "required": ["master", "fleet"], "properties": {"master": {"type": "string"}, "fleet": {"type": "string"}}},
+    "prometheusOperator": {"type": "object", "additionalProperties": false, "required": ["serviceMonitorEnabled", "rulesEnabled"], "properties": {"serviceMonitorEnabled": {"type": "boolean"}, "rulesEnabled": {"type": "boolean"}}},
+    "grafana": {"type": "object", "additionalProperties": false, "required": ["dashboardEnabled"], "properties": {"dashboardEnabled": {"type": "boolean"}}},
+    "remoteWrite": {"type": "object", "additionalProperties": false, "required": ["enabled", "endpoint", "port", "authSecretRef"], "properties": {"enabled": {"type": "boolean"}, "endpoint": {"type": "string", "pattern": "^https://"}, "port": {"type": "integer", "minimum": 1, "maximum": 65535}, "authSecretRef": {"type": "string"}}},
+    "resources": {"type": "object"},
+    "networkPolicy": {"type": "object", "additionalProperties": false, "required": ["enabled"], "properties": {"enabled": {"type": "boolean"}}}
+  },
+  "allOf": [
+    {"if": {"required": ["enabled"], "properties": {"enabled": {"const": false}}}, "then": {}, "else": {"properties": {"image": {"properties": {"digest": {"not": {"const": "sha256:0000000000000000000000000000000000000000000000000000000000000000"}}}}}}},
+    {"if": {"properties": {"remoteWrite": {"properties": {"enabled": {"const": true}}}}}, "then": {"properties": {"remoteWrite": {"properties": {"authSecretRef": {"minLength": 1}}}}}}
+  ],
+  "definitions": {
+    "image": {"type": "object", "additionalProperties": false, "required": ["repository", "digest", "pullPolicy"], "properties": {"repository": {"type": "string", "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._-]*|[A-Za-z0-9][A-Za-z0-9._-]*(?::[0-9]+)?(?:/[A-Za-z0-9][A-Za-z0-9._-]*)+)$"}, "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "pullPolicy": {"enum": ["IfNotPresent", "Always", "Never"]}}}
+  }
+}

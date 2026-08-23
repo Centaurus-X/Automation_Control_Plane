@@ -1,0 +1,28 @@
+enabled: true
+replicaCount: 1
+image:
+  repository: registry.example.invalid/automation/mcp-controller
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+siteId: site-main
+masterInstanceId: master-01
+instanceId: mcp-controller-01
+mqtt:
+  host: automation-mqtt
+  port: 8883
+  serverHostname: automation-mqtt
+secretRefs:
+  mqtt: automation-mcp-mqtt
+  auth: automation-mcp-auth
+persistence:
+  size: 1Gi
+  storageClassName: ""
+service:
+  type: ClusterIP
+resources:
+  requests: {cpu: 100m, memory: 128Mi}
+  limits: {cpu: 1, memory: 512Mi}
+networkPolicy:
+  enabled: true
+podAnnotations: {}

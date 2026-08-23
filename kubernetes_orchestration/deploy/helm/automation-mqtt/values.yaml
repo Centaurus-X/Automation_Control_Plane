@@ -1,0 +1,30 @@
+enabled: true
+image:
+  repository: eclipse-mosquitto
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+siteId: site-main
+masterInstanceId: master-01
+proxyInstanceId: proxy-01
+mcpInstanceId: mcp-controller-01
+workerNodeIds:
+  - fn-01
+  - fn-02
+secretRefs:
+  tls: automation-mqtt-tls
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClassName: ""
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 1
+    memory: 512Mi
+networkPolicy:
+  enabled: true
+  additionalIngress: []
+podAnnotations: {}

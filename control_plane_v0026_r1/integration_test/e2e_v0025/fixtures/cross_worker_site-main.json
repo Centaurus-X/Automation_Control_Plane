@@ -1,0 +1,35 @@
+{
+  "site_id": "site-main",
+  "cross_site": false,
+  "source": {
+    "node_id": "fn-01",
+    "controller_uuid": "62671112-766c-59ed-b0ff-30a49d48f747",
+    "sensor_id": 3,
+    "function_type": "read_holding_registers",
+    "address": 3,
+    "device_id": 1,
+    "modbus_host": "192.168.0.3",
+    "modbus_port": 5020,
+    "baseline_value": 74,
+    "trigger_value": 76,
+    "threshold": 75
+  },
+  "cross": {
+    "scope": "cross:fn-01.default",
+    "owner_node_id": "fn-01",
+    "rule_id": 3
+  },
+  "target": {
+    "node_id": "fn-02",
+    "certificate_identity": "urn:automation:site-main:worker:fn-02",
+    "controller_uuid": "d11032fa-33db-56de-a4ed-7e16cca3ded7",
+    "actuator_id": 4,
+    "function_type": "write_register",
+    "address": 544,
+    "state_id": 14,
+    "source_value_id": 2,
+    "target_value_id": 1,
+    "baseline_command_value": 2,
+    "trigger_command_value": 1
+  }
+}

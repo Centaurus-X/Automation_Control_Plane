@@ -1,0 +1,52 @@
+flowchart LR
+    C["Client / HMI<br/>WSS primary · HTTPS secondary"]
+
+    subgraph P["Proxy Gateway v0015 · one process"]
+        WSE["websockets :8443<br/>/ws/v1/events"]
+        WSC["websockets :8443<br/>/ws/v1/control"]
+        HTTP["Uvicorn :8444<br/>HTTPS only · ws=none"]
+        CORE["Shared Auth · RBAC · Audit<br/>Command Dispatcher · Event Stream"]
+        WSE --> CORE
+        WSC --> CORE
+        HTTP --> CORE
+    end
+
+    B[("Mosquitto<br/>MQTTS · mTLS · QoS 1")]
+    M["Master Node<br/>Config Authority · Registry<br/>Ownership · Routing · Fencing"]
+    DB[("PostgreSQL<br/>Config · Outbox · Sessions<br/>Audit · Replay")]
+    W1["Worker fn-01 v0082<br/>Cross only via external test overlay"]
+    W2["Future real Worker fn-02<br/>not part of v0015 E2E"]
+    S2["fn-02 protocol simulator<br/>E2E only · not a real Worker"]
+    IO1["Modbus fn-01"]
+    IO2["Modbus fn-02"]
+
+    C -->|"WSS command.request"| WSC
+    WSC -->|"accepted / immediate result"| C
+    C -->|"WSS subscribe / replay cursor"| WSE
+    WSE -->|"sensor · ACK · operation.result"| C
+    C -.->|"optional HTTPS REST"| HTTP
+    CORE <-->|"fixed domain commands / events"| B
+    M <-->|"control + worker protocol"| B
+    M <-->|"TLS SQL"| DB
+    CORE <-->|"TLS SQL"| DB
+    B <-->|"config · heartbeat · sensor · actuator"| W1
+    B -.->|"future production path"| W2
+    B <-.->|"simulated worker protocol"| S2
+    W1 <-->|"local read/write"| IO1
+    W2 -.->|"future local read/write"| IO2
+    W1 -.->|"Cross intent via Master"| B
+
+    classDef client fill:#eff6ff,stroke:#2563eb,color:#0f172a,stroke-width:2px;
+    classDef proxy fill:#ecfeff,stroke:#0891b2,color:#0f172a,stroke-width:2px;
+    classDef core fill:#ecfdf5,stroke:#15803d,color:#0f172a,stroke-width:2px;
+    classDef broker fill:#fff7ed,stroke:#ea580c,color:#0f172a,stroke-width:2px;
+    classDef store fill:#faf5ff,stroke:#7e22ce,color:#0f172a,stroke-width:2px;
+    classDef worker fill:#fefce8,stroke:#a16207,color:#0f172a,stroke-width:2px;
+    classDef sim fill:#f8fafc,stroke:#64748b,color:#475569,stroke-width:2px,stroke-dasharray:6 4;
+    class C client;
+    class WSE,WSC,HTTP proxy;
+    class CORE,M core;
+    class B broker;
+    class DB store;
+    class W1,W2,IO1,IO2 worker;
+    class S2 sim;

@@ -1,0 +1,6 @@
+.git
+**/__pycache__
+**/*.pyc
+secrets
+master_node/_runtime
+*.zip

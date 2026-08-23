@@ -1,0 +1,16 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+*.log
+*.tmp
+*.key
+*.pem
+*.token
+*.sqlite3
+runtime-secrets/
+evidence/
+state/
+.DS_Store

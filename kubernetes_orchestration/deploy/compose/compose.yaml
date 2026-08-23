@@ -1,0 +1,36 @@
+name: automation-fleet
+
+services:
+  fleet:
+    image: ${FLEET_IMAGE:?FLEET_IMAGE must be an immutable repository@sha256 digest}
+    command: ["--config", "/etc/automation-fleet-runtime/fleet.container.json", "serve"]
+    restart: unless-stopped
+    stop_grace_period: 35s
+    environment:
+      FLEET_ALLOW_MUTATIONS: "${FLEET_ALLOW_MUTATIONS:-0}"
+      FLEET_COOKIE_SECURE: "${FLEET_COOKIE_SECURE:-0}"
+      KUBECONFIG: /run/kubeconfig/config
+    ports:
+      - "127.0.0.1:${FLEET_PORT:-9080}:9080"
+    volumes:
+      - ../../config:/etc/automation-fleet:ro
+      - ./fleet.container.json:/etc/automation-fleet-runtime/fleet.container.json:ro
+      - ${FLEET_AUTH_DIR:?FLEET_AUTH_DIR is required}:/run/secrets:ro
+      - ${FLEET_KUBECONFIG:?FLEET_KUBECONFIG is required}:/run/kubeconfig/config:ro
+      - fleet_state:/var/lib/automation-fleet
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9080/api/v1/health/ready', timeout=2).read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+
+volumes:
+  fleet_state:

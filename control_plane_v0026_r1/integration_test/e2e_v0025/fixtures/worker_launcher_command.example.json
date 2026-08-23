@@ -1,0 +1,9 @@
+[
+  "ssh",
+  "-T",
+  "philo@192.168.0.80",
+  "python3",
+  "/home/philo/automation-e2e-v0025/worker_cross_test_launcher.py",
+  "--plan",
+  "/home/philo/automation-e2e-v0025/worker_launcher_plan.json"
+]

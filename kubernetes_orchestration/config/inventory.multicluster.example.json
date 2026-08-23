@@ -1,0 +1,58 @@
+{
+  "schema_version": 2,
+  "environment_id": "production-fleet",
+  "targets": [
+    {
+      "target_id": "cluster-management",
+      "target_kind": "kubernetes",
+      "site_id": "site-main",
+      "cluster_id": "cluster-management",
+      "failure_domain": "region-a-zone-1",
+      "context": "management",
+      "namespace": "automation-system",
+      "write_owner": "helm",
+      "execution_mode": "direct",
+      "wave": 0,
+      "capabilities": ["network-policy", "persistent-storage", "soft-rt"],
+      "labels": {"environment": "production", "tier": "management"}
+    },
+    {
+      "target_id": "cluster-edge-agent",
+      "target_kind": "kubernetes",
+      "site_id": "site-edge-a",
+      "cluster_id": "cluster-edge-agent",
+      "failure_domain": "region-a-zone-2",
+      "context": "in-cluster",
+      "namespace": "automation-system",
+      "write_owner": "helm",
+      "execution_mode": "agent",
+      "agent_task_timeout_s": 1200,
+      "wave": 1,
+      "capabilities": ["network-policy", "persistent-storage", "soft-rt"],
+      "labels": {"environment": "production", "tier": "edge"}
+    },
+    {
+      "target_id": "cluster-edge-gitops",
+      "target_kind": "kubernetes",
+      "site_id": "site-edge-b",
+      "cluster_id": "cluster-edge-gitops",
+      "failure_domain": "region-b-zone-1",
+      "context": "edge-b-readonly",
+      "namespace": "automation-system",
+      "write_owner": "gitops_flux",
+      "execution_mode": "direct",
+      "wave": 1,
+      "capabilities": ["network-policy", "persistent-storage", "soft-rt"],
+      "labels": {"environment": "production", "tier": "edge"},
+      "gitops": {
+        "worktree": "/srv/automation-fleet/gitops",
+        "relative_path": "clusters/edge-b/automation-system",
+        "branch": "main",
+        "remote": "origin",
+        "push": true,
+        "reconciler_name": "automation-system",
+        "reconciler_namespace": "flux-system"
+      }
+    }
+  ]
+}

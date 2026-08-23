@@ -1,0 +1,21 @@
+{{- if .Values.enabled }}
+{{- if .Values.prometheusOperator.serviceMonitorEnabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-observability
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-observability
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+    - port: metrics
+      interval: 30s
+{{- end }}
+
+{{- end }}

@@ -1,0 +1,21 @@
+{
+  "proof_kind": "broker-session-reservation",
+  "authoritative": true,
+  "source": "replace-with-broker-management-oracle",
+  "captured_at": "REPLACE_WITH_CURRENT_UTC_TIMESTAMP",
+  "site_id": "site-main",
+  "node_id": "fn-02",
+  "client_id": "automation-e2e-site-main-fn-02",
+  "certificate_identity": "urn:automation:site-main:worker:fn-02",
+  "active_client_id": false,
+  "active_certificate_identity": false,
+  "reservation_active": true,
+  "reservation_id": "REPLACE_WITH_MANAGEMENT_RESERVATION_ID",
+  "reservation_run_id": "REPLACE_WITH_EXACT_E2E_RUN_ID",
+  "reservation_expires_at": "REPLACE_WITH_UTC_AFTER_SIMULATOR_DURATION_PLUS_60_SECONDS",
+  "mtls_identity_verified": true,
+  "foreign_site_publish_denied": true,
+  "foreign_site_subscribe_denied": true,
+  "signature_algorithm": "ed25519",
+  "signature": "REPLACE_WITH_BASE64_ED25519_SIGNATURE_OVER_CANONICAL_JSON_WITHOUT_SIGNATURE_FIELD"
+}

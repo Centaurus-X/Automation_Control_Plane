@@ -1,0 +1,16 @@
+{{- if .Values.enabled }}
+{{- if .Values.grafana.dashboardEnabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-grafana-dashboard
+  labels:
+    app.kubernetes.io/name: automation-observability
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+    grafana_dashboard: "1"
+data:
+  automation-fleet-overview.json: |
+{{ .Files.Get "dashboards/automation-fleet-overview.json" | indent 4 }}
+{{- end }}
+{{- end }}

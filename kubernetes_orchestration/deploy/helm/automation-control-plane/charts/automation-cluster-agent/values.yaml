@@ -1,0 +1,23 @@
+enabled: true
+replicaCount: 2
+image:
+  repository: registry.example.invalid/automation/fleet
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+centralUrl: https://fleet.example.invalid
+allowInsecureHttp: false
+targetId: cluster-main
+clusterId: cluster-main
+leaseName: automation-cluster-agent
+leaseTtlSeconds: 30
+pollIntervalSeconds: 2
+capabilities: [helm-v3, network-policy, persistent-storage]
+secretRefs:
+  agentToken: automation-cluster-agent-token
+resources:
+  requests: {cpu: 50m, memory: 96Mi}
+  limits: {cpu: 500m, memory: 256Mi}
+networkPolicy:
+  enabled: true
+podAnnotations: {}

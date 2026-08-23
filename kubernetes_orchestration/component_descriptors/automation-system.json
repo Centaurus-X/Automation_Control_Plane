@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "component_id": "automation-system",
+  "providers": ["linux_systemd", "kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": ["mqtt", "master"], "management": ["automation-fleet"], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["network-policy", "persistent-storage", "soft-rt"]},
+  "health_contract": {"mode": "worker-preflight-and-process"},
+  "rollback_contract": {"application_reversible": true, "state_reversible": false},
+  "security_contract": {"final_node_authority": true, "hardware_owner": "worker", "replicas_max": 1},
+  "runtime_profiles": ["python_soft_rt_linux", "container_simulation", "kubernetes_soft_rt"]
+}

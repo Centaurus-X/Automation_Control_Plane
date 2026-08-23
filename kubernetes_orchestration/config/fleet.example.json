@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "listen": {
+    "host": "127.0.0.1",
+    "port": 9080
+  },
+  "inventory_path": "inventory.example.json",
+  "catalog_path": "release_catalog.json",
+  "desired_state_path": "desired_state.example.json",
+  "policy_path": "policy.example.json",
+  "admin_token_file": "runtime/admin.token",
+  "operator_token_file": "runtime/operator.token",
+  "approver_token_file": "runtime/approver.token",
+  "auditor_token_file": "runtime/auditor.token",
+  "viewer_token_file": "runtime/viewer.token",
+  "agent_registry_path": "runtime/agents.json",
+  "state_dir": "",
+  "observe_timeout_s": 30
+}

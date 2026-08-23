@@ -1,0 +1,13 @@
+{{- if .Values.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-master
+      app.kubernetes.io/instance: {{ .Release.Name }}
+
+{{- end }}

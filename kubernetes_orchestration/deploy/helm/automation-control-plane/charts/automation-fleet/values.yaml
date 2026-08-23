@@ -1,0 +1,33 @@
+enabled: true
+replicaCount: 1
+image:
+  repository: registry.example.invalid/automation/fleet
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+allowMutations: false
+cookieSecure: true
+secretRefs:
+  auth: automation-fleet-auth
+  agentTokens: ""
+persistence:
+  size: 4Gi
+  storageClassName: ""
+service:
+  type: ClusterIP
+  port: 9080
+config:
+  agentRegistryJson: |
+    {"schema_version":1,"agents":[]}
+  inventoryJson: |
+    {"schema_version":2,"environment_id":"in-cluster","targets":[{"target_id":"management-cluster","target_kind":"kubernetes","site_id":"site-main","cluster_id":"management-cluster","context":"in-cluster","namespace":"automation-system","write_owner":"helm","wave":0,"capabilities":["persistent-storage","network-policy"]}]}
+  desiredStateJson: |
+    {"schema_version":1,"deployment_id":"site-main-control-plane","release_ref":"automation-control-plane-v0027-r3","placement":{"target_ids":["management-cluster"]},"components":{"postgresql":{"enabled":true,"values":{"mode":"external","external":{"host":"postgresql.example.invalid","port":5432,"database":"automation_platform"}}}},"rollout":{"strategy":"waves","max_parallel":1,"stop_on_failure":true,"approval_per_wave":true,"canary_per_failure_domain":true}}
+  policyJson: |
+    {"schema_version":1,"require_approval":true,"require_distinct_approver":true,"allow_database_automatic_rollback":false,"allow_kubernetes_hard_rt":false,"allowed_write_owners":["helm","gitops_argocd","gitops_flux"],"max_agent_task_wait_s":1800,"field_manager":"automation-fleet-v0027-r3"}
+resources:
+  requests: {cpu: 100m, memory: 128Mi}
+  limits: {cpu: 1, memory: 512Mi}
+networkPolicy:
+  enabled: true
+podAnnotations: {}

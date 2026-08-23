@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1450" viewBox="0 0 1600 1450" role="img" aria-labelledby="title desc">
+  <title id="title">E2E v0015 – WSS control, events and Cross-Worker simulation</title>
+  <desc id="desc">Sequence from the E2E client through two direct WebSocket endpoints, Proxy core, MQTT broker and Master to Worker fn-01 and a protocol simulator for fn-02.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#111d33"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#8dd8ff"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6ee7b7"/>
+    </marker>
+    <style>
+      .title { font: 700 30px Inter,Segoe UI,sans-serif; fill: #f8fafc; }
+      .subtitle { font: 400 16px Inter,Segoe UI,sans-serif; fill: #b8c7dc; }
+      .actor { fill: #18263d; stroke: #46698f; stroke-width: 2; rx: 10; }
+      .actor2 { fill: #15312d; stroke: #2e8b75; stroke-width: 2; rx: 10; }
+      .actorText { font: 650 14px Inter,Segoe UI,sans-serif; fill: #f1f5f9; text-anchor: middle; }
+      .actorPath { font: 650 12px Inter,Segoe UI,sans-serif; fill: #f1f5f9; text-anchor: middle; }
+      .lane { stroke: #43546c; stroke-width: 1.5; stroke-dasharray: 7 7; }
+      .msg { stroke: #8dd8ff; stroke-width: 2; marker-end: url(#arrow); }
+      .ok { stroke: #6ee7b7; stroke-width: 2; marker-end: url(#arrowGreen); }
+      .text { font: 500 13px Inter,Segoe UI,sans-serif; fill: #d8e5f5; }
+      .phase { fill: #20314c; stroke: #4d7098; stroke-width: 1.5; rx: 8; }
+      .phaseText { font: 700 14px Inter,Segoe UI,sans-serif; fill: #bfe8ff; }
+      .note { fill: #352e1a; stroke: #b58a29; stroke-width: 1.5; rx: 8; }
+      .noteText { font: 600 13px Inter,Segoe UI,sans-serif; fill: #f8dda1; }
+      .footer { font: 500 13px Inter,Segoe UI,sans-serif; fill: #9fb1c8; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1450" fill="url(#bg)"/>
+  <text x="60" y="58" class="title">E2E v0015: WSS Control + Events + Cross-Worker-Simulation</text>
+  <text x="60" y="88" class="subtitle">Primärer Transport: direktes asyncio/websockets-Gateway · fn-02 ist ein markierter Protokollsimulator, kein echter Worker und kein Cross-Site-Nachweis.</text>
+
+  <g id="actors">
+    <rect x="35" y="120" width="145" height="62" class="actor"/><text x="107" y="147" class="actorText"><tspan x="107">E2E-Client</tspan><tspan x="107" dy="19">v0015</tspan></text>
+    <rect x="220" y="120" width="145" height="62" class="actor"/><text x="292" y="147" class="actorPath"><tspan x="292">WSS events</tspan><tspan x="292" dy="19">:8443/ws/v1/events</tspan></text>
+    <rect x="405" y="120" width="145" height="62" class="actor"/><text x="477" y="147" class="actorPath"><tspan x="477">WSS control</tspan><tspan x="477" dy="19">:8443/ws/v1/control</tspan></text>
+    <rect x="590" y="120" width="145" height="62" class="actor"/><text x="662" y="147" class="actorText"><tspan x="662">Proxy Core</tspan><tspan x="662" dy="19">shared runtime</tspan></text>
+    <rect x="775" y="120" width="145" height="62" class="actor"/><text x="847" y="147" class="actorText"><tspan x="847">Mosquitto</tspan><tspan x="847" dy="19">MQTTS</tspan></text>
+    <rect x="960" y="120" width="145" height="62" class="actor"/><text x="1032" y="147" class="actorText"><tspan x="1032">Master</tspan><tspan x="1032" dy="19">Authority</tspan></text>
+    <rect x="1145" y="120" width="145" height="62" class="actor2"/><text x="1217" y="147" class="actorText"><tspan x="1217">Worker</tspan><tspan x="1217" dy="19">fn-01</tspan></text>
+    <rect x="1330" y="120" width="220" height="62" class="actor2"/><text x="1440" y="147" class="actorText"><tspan x="1440">fn-02 Protokollsimulator</tspan><tspan x="1440" dy="19">simulation=true</tspan></text>
+  </g>
+
+  <g id="lanes">
+    <line x1="107" y1="182" x2="107" y2="1270" class="lane"/><line x1="292" y1="182" x2="292" y2="1270" class="lane"/>
+    <line x1="477" y1="182" x2="477" y2="1270" class="lane"/><line x1="662" y1="182" x2="662" y2="1270" class="lane"/>
+    <line x1="847" y1="182" x2="847" y2="1270" class="lane"/><line x1="1032" y1="182" x2="1032" y2="1270" class="lane"/>
+    <line x1="1217" y1="182" x2="1217" y2="1270" class="lane"/><line x1="1440" y1="182" x2="1440" y2="1270" class="lane"/>
+  </g>
+
+  <rect x="45" y="210" width="620" height="34" class="phase"/><text x="62" y="232" class="phaseText">Phase A · Authentifizierung, Subscription und reine WSS-Leseoperationen</text>
+  <line x1="107" y1="275" x2="292" y2="275" class="msg"/><text x="120" y="264" class="text">TLS + Bearer/Session + Origin</text>
+  <line x1="292" y1="312" x2="107" y2="312" class="ok"/><text x="125" y="302" class="text">subscription.accepted + cursor</text>
+  <line x1="107" y1="349" x2="477" y2="349" class="msg"/><text x="150" y="338" class="text">command.request: nodes.list / config.get</text>
+  <line x1="477" y1="386" x2="662" y2="386" class="msg"/><text x="492" y="375" class="text">RBAC + Dispatcher</text>
+  <line x1="662" y1="423" x2="847" y2="423" class="msg"/><text x="680" y="412" class="text">fester MQTT-Befehl</text>
+  <line x1="847" y1="460" x2="1032" y2="460" class="msg"/><text x="877" y="449" class="text">MQTTS</text>
+  <line x1="1032" y1="497" x2="477" y2="497" class="ok"/><text x="650" y="486" class="text">command.result via Broker + Proxy Core</text>
+  <line x1="477" y1="534" x2="107" y2="534" class="ok"/><text x="180" y="523" class="text">accepted → result</text>
+
+  <rect x="45" y="565" width="690" height="34" class="phase"/><text x="62" y="587" class="phaseText">Phase B · Mutierender WSS-Befehl, Worker-Ausführung, Readback und Restore</text>
+  <line x1="107" y1="630" x2="477" y2="630" class="msg"/><text x="140" y="619" class="text">actuator.request + idempotency_key + TTL</text>
+  <line x1="477" y1="667" x2="1032" y2="667" class="msg"/><text x="630" y="656" class="text">Proxy → Broker → Master</text>
+  <line x1="1032" y1="704" x2="1217" y2="704" class="msg"/><text x="1050" y="693" class="text">execute, fenced</text>
+  <line x1="1217" y1="741" x2="1032" y2="741" class="ok"/><text x="1048" y="730" class="text">write + readback</text>
+  <line x1="1032" y1="778" x2="662" y2="778" class="ok"/><text x="715" y="767" class="text">operation.result CONFIRMED via Broker</text>
+  <line x1="662" y1="815" x2="292" y2="815" class="ok"/><text x="400" y="804" class="text">gefiltertes Event</text>
+  <line x1="292" y1="852" x2="107" y2="852" class="ok"/><text x="125" y="841" class="text">Resultat über /events</text>
+
+  <rect x="45" y="883" width="715" height="34" class="phase"/><text x="62" y="905" class="phaseText">Phase C · Cross-Worker-Protokollsimulation (fn-01 → fn-02), anschließend Restore</text>
+  <text x="925" y="935" class="text">fn-01: Cross-Runtime nur über externen Test-Overlay; Worker-Paket unverändert</text>
+  <line x1="1440" y1="970" x2="1032" y2="970" class="msg"/><text x="1090" y="959" class="text">Registration + Capabilities via Broker</text>
+  <line x1="1032" y1="1007" x2="1440" y2="1007" class="msg"/><text x="1095" y="996" class="text">Admission APPROVED via Broker</text>
+  <line x1="1032" y1="1044" x2="1440" y2="1044" class="msg"/><text x="1095" y="1033" class="text">node:fn-02 Full rollout via Broker</text>
+  <line x1="1440" y1="1081" x2="1032" y2="1081" class="ok"/><text x="1090" y="1070" class="text">exact fingerprint Apply-ACK via Broker</text>
+  <line x1="1440" y1="1118" x2="1032" y2="1118" class="ok"/><text x="1090" y="1107" class="text">convergent heartbeat via Broker</text>
+  <line x1="1032" y1="1155" x2="1217" y2="1155" class="msg"/><text x="1048" y="1144" class="text">Cross shard via Broker</text>
+  <line x1="1217" y1="1192" x2="1032" y2="1192" class="msg"/><text x="1048" y="1181" class="text">remote intent via Broker, epoch/term fenced</text>
+  <line x1="1032" y1="1229" x2="1440" y2="1229" class="msg"/><text x="1095" y="1218" class="text">execute via Broker on owner fn-02</text>
+  <line x1="1440" y1="1266" x2="292" y2="1266" class="ok"/><text x="645" y="1255" class="text">readback → Broker → Master → Broker → Proxy Core → /ws/v1/events</text>
+
+  <rect x="45" y="1310" width="1510" height="70" class="note"/>
+  <text x="65" y="1335" class="noteText"><tspan x="65">Abnahmegrenze: beweist Cross-Worker-Routing und Protokollverträge im site_main-Labor.</tspan><tspan x="65" dy="21">Beweist weder einen echten fn-02-Worker noch Hardware/Safety/RuleEngine oder Cross-Site.</tspan></text>
+  <text x="60" y="1415" class="footer">Release-Gate: Ergebnisse korreliert, term/epoch-fenced und simulation=true; reversible Änderungen restauriert, erwartete fn-02-Lab-Registry-Fixture explizit reportet.</text>
+</svg>

@@ -1,0 +1,51 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "automation-fleet-v0027-r3",
+  "documentNamespace": "urn:automation:fleet:sbom:v0027-r3",
+  "creationInfo": {
+    "created": "2026-08-22T00:00:00Z",
+    "creators": ["Tool: automation-fleet-release-builder-v0027-r3"]
+  },
+  "packages": [
+    {
+      "name": "automation-fleet",
+      "SPDXID": "SPDXRef-Package-AutomationFleet",
+      "versionInfo": "0.27.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "name": "automation-control-plane-preserved",
+      "SPDXID": "SPDXRef-Package-ControlPlane",
+      "versionInfo": "0.26.0-v0026-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [{"algorithm": "SHA256", "checksumValue": "ccddf6ed4c959bf17cad4041c68b683eccc0110702c6ae46987b220d07d2fb03"}],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "automation-system-external-runtime",
+      "SPDXID": "SPDXRef-Package-AutomationSystem",
+      "versionInfo": "v0101",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [{"algorithm": "SHA256", "checksumValue": "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467"}],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {"spdxElementId": "SPDXRef-DOCUMENT", "relationshipType": "DESCRIBES", "relatedSpdxElement": "SPDXRef-Package-AutomationFleet"},
+    {"spdxElementId": "SPDXRef-Package-AutomationFleet", "relationshipType": "DEPENDS_ON", "relatedSpdxElement": "SPDXRef-Package-ControlPlane"},
+    {"spdxElementId": "SPDXRef-Package-AutomationFleet", "relationshipType": "OTHER", "relatedSpdxElement": "SPDXRef-Package-AutomationSystem", "comment": "Runtime remains a separately supplied, digest-bound archive and is not embedded."}
+  ]
+}

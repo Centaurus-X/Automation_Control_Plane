@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:automation:fleet:evidence-bundle:v1",
+  "type": "object",
+  "required": ["schema_version", "plan", "status", "evidence", "audit", "audit_chain", "bundle_digest"],
+  "properties": {"schema_version": {"const": 1}, "plan": {"type": "object"}, "status": {"type": "object"}, "evidence": {"type": "array"}, "audit": {"type": "array"}, "audit_chain": {"type": "object"}, "bundle_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}}
+}

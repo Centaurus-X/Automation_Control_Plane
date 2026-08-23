@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "automation.proxy.websocket.v1/command_request.schema.json",
+  "title": "Automation Proxy WSS command request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "type", "request_id", "action", "payload"],
+  "properties": {
+    "protocol": {"const": "automation.proxy.websocket.v1"},
+    "type": {"const": "command.request"},
+    "request_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "action": {"type": "string", "pattern": "^[a-z][a-z0-9._-]{1,95}$"},
+    "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 128},
+    "ttl_s": {"type": "number", "minimum": 1, "maximum": 300},
+    "payload": {"type": "object"},
+    "csrf_token": {"type": "string", "maxLength": 512}
+  },
+  "allOf": [
+    {"$ref": "action_payloads.schema.json"},
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "enum": [
+              "config.propose",
+              "config.rollback",
+              "actuator.request",
+              "user.create",
+              "api_tokens.create",
+              "api_tokens.revoke",
+              "node.drain",
+              "node.state.set",
+              "node.admission.approve",
+              "terminal.execute"
+            ]
+          }
+        },
+        "required": ["action"]
+      },
+      "then": {"required": ["idempotency_key"]}
+    }
+  ]
+}

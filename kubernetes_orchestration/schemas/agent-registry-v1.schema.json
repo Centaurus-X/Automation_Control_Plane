@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:automation:fleet:agent-registry:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "agents"],
+  "properties": {"schema_version": {"const": 1}, "agents": {"type": "array", "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["target_id", "token_file"], "properties": {"target_id": {"type": "string"}, "token_file": {"type": "string"}, "enabled": {"const": true}, "tls_subject": {"type": ["string", "null"]}}}}}
+}

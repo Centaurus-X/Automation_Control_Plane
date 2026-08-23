@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "release": {
+    "name": "automation_control_plane_release",
+    "version": "__CONTROL_PLANE_VERSION__",
+    "revision": "__CONTROL_PLANE_REVISION__"
+  },
+  "worker": {
+    "name": "automation_system",
+    "version": "__WORKER_V0101_VERSION__",
+    "revision": "__WORKER_V0101_REVISION__",
+    "artifact_id": "automation-system-v0101"
+  },
+  "compatibility": {
+    "node_storage": [
+      9
+    ],
+    "legacy_import": [
+      5
+    ],
+    "cross_storage": [
+      8
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "automation-system-v0101",
+      "path": "../automation_system_v0101.zip",
+      "sha256": "__AUTOMATION_SYSTEM_V0101_ZIP_SHA256__",
+      "manifest_sha256": "__AUTOMATION_SYSTEM_V0101_MANIFEST_SHA256__"
+    },
+    {
+      "artifact_id": "legacy-rollout-backend",
+      "path": "rollout_automation.sh",
+      "sha256": "__ROLLOUT_AUTOMATION_SHA256__"
+    },
+    {
+      "artifact_id": "status-hook",
+      "path": "status_all.sh",
+      "sha256": "__STATUS_ALL_SHA256__"
+    },
+    {
+      "artifact_id": "running-test-hook",
+      "path": "test_running_all.sh",
+      "sha256": "__TEST_RUNNING_ALL_SHA256__"
+    },
+    {
+      "artifact_id": "mcp-release-metadata",
+      "path": "mcp_controller_server/RELEASE_METADATA.json",
+      "sha256": "__MCP_RELEASE_METADATA_SHA256__"
+    },
+    {
+      "artifact_id": "mcp-component-manifest",
+      "path": "mcp_controller_server/SHA256SUMS",
+      "sha256": "__MCP_COMPONENT_MANIFEST_SHA256__"
+    },
+    {
+      "artifact_id": "mcp-static-test-hook",
+      "path": "mcp_controller_server/test_all.sh",
+      "sha256": "__MCP_STATIC_TEST_HOOK_SHA256__"
+    }
+  ],
+  "legacy_backend": {
+    "path": "rollout_automation.sh",
+    "sha256": "__ROLLOUT_AUTOMATION_SHA256__",
+    "component_order": [
+      "database",
+      "mqtt",
+      "master",
+      "proxy",
+      "mcp_controller_server",
+      "worker"
+    ]
+  },
+  "required_tests": [
+    "static",
+    "readiness",
+    "mcp-static-contract",
+    "mcp-mqtt-boundary",
+    "mcp-readiness",
+    "config-file-commit",
+    "native-client-proxy-mqtt-master-worker-diff-commit",
+    "client-proxy-master-worker-modbus",
+    "restart-recovery",
+    "worker-tia-s7-emulator",
+    "worker-thread-pool-resilience"
+  ]
+}
