@@ -8,5 +8,5 @@
   "secret_policy": "references-only",
   "allowed_write_owners": ["helm", "gitops_argocd", "gitops_flux"],
   "max_agent_task_wait_s": 1800,
-  "field_manager": "automation-fleet-v0027-r3"
+  "field_manager": "automation-fleet-v0028-r1"
 }

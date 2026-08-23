@@ -1,4 +1,4 @@
-"""Fail-closed static and integrity verification for the v0027-r3 release."""
+"""Fail-closed static and integrity verification for the v0028-r1 release."""
 
 import argparse
 import ast
@@ -15,7 +15,7 @@ CONTROL_ARCHIVE_SHA256 = "ccddf6ed4c959bf17cad4041c68b683eccc0110702c6ae46987b22
 RUNTIME_ARCHIVE_SHA256 = "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467"
 RUNTIME_MANIFEST_SHA256 = "699c29f9cf58b1bd6bd7407e879b3b5b3f41ad978343037a1dc33a75ec25026d"
 ARCHITECTURE_PLAN_SHA256 = "865c061bd73b2fddc756a91dee6c5b96058e8559f733bd0b9be10e8fdfac3509"
-PARENT_RELEASE_SHA256 = "81dae99f922990a793ed4d77cf56659b9aa50b7d09cedcad4031bbdd61f769e6"
+PARENT_RELEASE_SHA256 = "eb7b3ed52273dc6cdd6dd22516bc50cb516ccee58de2d11697fb074d8196a971"
 EXPECTED_CONTROL_FILES = 588
 EXPECTED_CONTROL_MANIFEST_ENTRIES = 587
 FORBIDDEN_KINDS = {
@@ -84,11 +84,11 @@ def _verify_control_plane(root, checks):
 
 
 def _verify_identity(root, checks):
-    if root.name != "automation_control_plane_release_v0027_r3":
+    if root.name != "automation_control_plane_release_v0028_r1":
         raise ValueError("release root name is invalid")
-    if (root / "VERSION").read_text(encoding="utf-8").strip() != "0.27.3":
+    if (root / "VERSION").read_text(encoding="utf-8").strip() != "0.28.0":
         raise ValueError("release VERSION is invalid")
-    if (root / "RELEASE_REVISION").read_text(encoding="utf-8").strip() != "v0027-r3":
+    if (root / "RELEASE_REVISION").read_text(encoding="utf-8").strip() != "v0028-r1":
         raise ValueError("release revision is invalid")
     baselines = json.loads((root / "BASELINE_INPUTS.json").read_text(encoding="utf-8"))
     if baselines["parent_release"]["archive_sha256"] != PARENT_RELEASE_SHA256:

@@ -84,7 +84,7 @@ def desired_state(all_components=True):
     return {
         "schema_version": 1,
         "deployment_id": "unit-test-deployment",
-        "release_ref": "automation-control-plane-v0027-r3",
+        "release_ref": "automation-control-plane-v0028-r1",
         "placement": {"target_ids": ["cluster-b", "cluster-a"]},
         "components": components,
         "rollout": {"strategy": "waves", "max_parallel": 1,

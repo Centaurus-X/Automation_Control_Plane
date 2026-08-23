@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "release_id": "automation-control-plane-v0027-r3",
+  "release_id": "automation-control-plane-v0028-r1",
   "components": {
     "automation-fleet": {"descriptor": "component_descriptors/automation-fleet.json", "release_name": "automation-fleet", "chart": "deploy/helm/automation-fleet", "timeout_s": 600, "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": [], "management": [], "observability": ["observability"]}},
     "automation-system": {"descriptor": "component_descriptors/automation-system.json", "runtime_archive_digest": "sha256:c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467", "release_name": "automation-system", "chart": "deploy/helm/automation-system-soft", "timeout_s": 900, "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": ["mqtt", "master"], "management": ["automation-fleet"], "observability": ["observability"]}},

@@ -2,51 +2,51 @@ apiVersion: v2
 name: automation-control-plane
 description: Optional composition of independently installable Automation charts
 type: application
-version: 0.27.3
-appVersion: "0.27.3"
+version: 0.28.0
+appVersion: "0.28.0"
 dependencies:
   - name: automation-postgresql-integration
     alias: postgresql
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-postgresql-integration
     condition: postgresql.enabled
   - name: automation-mqtt
     alias: mqtt
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-mqtt
     condition: mqtt.enabled
   - name: automation-master
     alias: master
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-master
     condition: master.enabled
   - name: automation-proxy
     alias: proxy
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-proxy
     condition: proxy.enabled
   - name: automation-mcp-controller
     alias: mcpController
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-mcp-controller
     condition: mcpController.enabled
   - name: automation-system-soft
     alias: automationSystem
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-system-soft
     condition: automationSystem.enabled
   - name: automation-fleet
     alias: fleet
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-fleet
     condition: fleet.enabled
   - name: automation-observability
     alias: observability
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-observability
     condition: observability.enabled
   - name: automation-cluster-agent
     alias: clusterAgent
-    version: 0.27.3
+    version: 0.28.0
     repository: file://../automation-cluster-agent
     condition: clusterAgent.enabled

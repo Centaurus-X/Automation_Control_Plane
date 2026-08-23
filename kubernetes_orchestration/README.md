@@ -1,4 +1,4 @@
-# Kubernetes Orchestration Point 0.27.3 / v0027-r3
+# Kubernetes Orchestration Point 0.28.0 / v0028-r1
 
 Der Orchestration Point ist eine additive, eigenständig betreibbare Management-
 Komponente über der unveränderten Automation Control Plane und dem weiterhin

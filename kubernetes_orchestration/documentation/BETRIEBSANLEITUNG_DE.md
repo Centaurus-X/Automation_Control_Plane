@@ -48,7 +48,7 @@ Ein ungültiger oder manipulierter Zustand führt zu einem fehlgeschlagenen Star
 
 ```sh
 CONFIG="$HOME/.config/automation-fleet/fleet.json"
-PLAN=/tmp/automation-plan-v0027-r3.json
+PLAN=/tmp/automation-plan-v0028-r1.json
 
 ./kubernetes_orchestration/fleetctl.sh --config "$CONFIG" validate
 ./kubernetes_orchestration/fleetctl.sh --config "$CONFIG" \

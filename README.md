@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://github.com/Centaurus-X/Automation_Control_Plane/actions/workflows/quality.yml"><img alt="Quality" src="https://github.com/Centaurus-X/Automation_Control_Plane/actions/workflows/quality.yml/badge.svg"></a>
   <a href="https://github.com/Centaurus-X/Automation_Control_Plane/releases"><img alt="Release" src="https://img.shields.io/github/v/release/Centaurus-X/Automation_Control_Plane?display_name=tag&amp;sort=semver"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.27.3-2563eb">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.28.0-2563eb">
   <img alt="Maturity" src="https://img.shields.io/badge/maturity-pre--production-f59e0b">
   <a href="LICENSE"><img alt="License: GPL-3.0-only" src="https://img.shields.io/badge/license-GPL--3.0--only-0f766e"></a>
 </p>
@@ -20,7 +20,7 @@
   <a href="README.de.md">Deutsch</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="docs/ARCHITECTURE.md">Architecture</a> ·
-  <a href="kubernetes_orchestration/documentation/VALIDATION_RESULTS_V0027_R3.json">Validation</a> ·
+  <a href="kubernetes_orchestration/documentation/VALIDATION_RESULTS_V0028_R1.json">Validation</a> ·
   <a href="SECURITY.md">Security</a>
 </p>
 
@@ -39,9 +39,12 @@ Automation Control Plane separates these responsibilities:
 - The owning Automation System Worker retains SEM, safety, scope revision,
   fieldbus and final actuator authority.
 
-Release `0.27.3 / v0027-r3` preserves all 588 files of the embedded `v0026-r1`
-Control Plane byte-for-byte and adds the orchestration layer as a separate
-management boundary. The runtime remains a separately digest-bound release.
+Release `0.28.0 / v0028-r1` preserves all 588 files of the embedded `v0026-r1`
+Control Plane byte-for-byte and promotes the Linux/Helm portability patch into
+a complete successor package. Helm image templates now parse correctly, and
+all nine strict subchart schemas accept Helm's reserved `global` values tree.
+The orchestration layer remains a separate management boundary; the runtime
+remains a separately digest-bound release.
 
 ## Who it is for
 
@@ -64,7 +67,7 @@ management boundary. The runtime remains a separately digest-bound release.
 
 ## Engineering capabilities
 
-| Capability | Operational outcome | Evidence in `v0027-r3` |
+| Capability | Operational outcome | Evidence in `v0028-r1` |
 |---|---|---|
 | Immutable Plan v2 | Every target, chart, descriptor, value and policy input is digest-bound. | Deterministic planner and tamper tests. |
 | Nine-step Saga | Discovery through verification is journaled and resumable. | `discover → validate → render → diff → preflight → backup → apply → wait → verify`. |
@@ -184,17 +187,17 @@ sha256sum -c SHA256SUMS
 
 The packaged validation record reports:
 
-- 872 archive files and 871 internal manifest entries.
+- 899 archive files and 898 internal manifest entries.
 - 588 preserved `v0026-r1` files with byte-identity `PASS`.
 - 35 functional Fleet Python modules and 9 Python test files.
 - Planner, placement, lifecycle, provider, approval, agent, API, audit and evidence tests `PASS`.
 - JavaScript, JSON, static YAML, shell, Helm-boundary and runtime-binding gates `PASS`.
 - 54 external Automation Runtime tests `PASS` in the recorded release build.
 - Explicit `SKIP`, not `PASS`, for live Helm/kubectl/cluster/registry/CNI/storage/PKI/PostgreSQL/GitOps gates.
-- Original byte-exact release ZIP and SHA-256 sidecar attached to the GitHub release.
+- Deterministic ZIP construction and an external SHA-256 sidecar.
 
 See the machine-readable
-[validation result](kubernetes_orchestration/documentation/VALIDATION_RESULTS_V0027_R3.json)
+[validation result](kubernetes_orchestration/documentation/VALIDATION_RESULTS_V0028_R1.json)
 and normative [target acceptance checklist](kubernetes_orchestration/documentation/KUBERNETES_TARGET_ACCEPTANCE_DE.md).
 
 ## Performance model
@@ -241,7 +244,8 @@ SHA256SUMS                     complete publication manifest
 
 - [Architecture and technical diagnosis](docs/ARCHITECTURE.md)
 - [Kubernetes architecture](kubernetes_orchestration/documentation/ARCHITEKTUR_KUBERNETES_ORCHESTRATION_DE.md)
-- [R3 diagnosis](kubernetes_orchestration/documentation/DIAGNOSE_UND_IMPLEMENTIERUNG_V0027_R3_DE.md)
+- [v0028-r1 patch diagnosis](kubernetes_orchestration/documentation/DIAGNOSE_UND_IMPLEMENTIERUNG_V0028_R1_DE.md)
+- [v0028-r1 release validation](kubernetes_orchestration/documentation/RELEASE_VALIDATION_V0028_R1_DE.md)
 - [Operations guide](kubernetes_orchestration/documentation/BETRIEBSANLEITUNG_DE.md)
 - [Security model](kubernetes_orchestration/documentation/SICHERHEITSMODELL_DE.md)
 - [Agent and GitOps runbook](kubernetes_orchestration/documentation/RUNBOOK_AGENTEN_UND_GITOPS_DE.md)

@@ -354,7 +354,7 @@ def validate_desired_state(value, catalog):
             "rollout_strategy", "only journaled wave rollout is supported")
     max_parallel = rollout.get("max_parallel", 1)
     require(isinstance(max_parallel, int) and max_parallel == 1,
-            "max_parallel", "v0027-r3 uses deterministic max_parallel=1")
+            "max_parallel", "v0028-r1 uses deterministic max_parallel=1")
     require(rollout.get("stop_on_failure", True) is True,
             "stop_on_failure", "stop_on_failure must remain true")
     for field in ("approval_per_wave", "canary_per_failure_domain"):
@@ -375,7 +375,7 @@ def validate_policy(value):
     require(value.get("allow_database_automatic_rollback") is False,
             "database_rollback", "automatic database rollback is forbidden")
     require(value.get("allow_kubernetes_hard_rt") is False,
-            "hard_rt_policy", "Kubernetes hard-RT is not qualified in v0027-r3")
+            "hard_rt_policy", "Kubernetes hard-RT is not qualified in v0028-r1")
     field_manager = value.get("field_manager")
     require(isinstance(field_manager, str) and field_manager,
             "field_manager", "policy requires a field_manager")

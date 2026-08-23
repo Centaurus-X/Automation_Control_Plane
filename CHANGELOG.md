@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.28.0 / v0028-r1 — 2026-08-23
+
+- Promoted the verified Linux/Helm portability patch into a complete successor release.
+- Corrected quoted Helm `required` expressions in Master and MQTT workload image references.
+- Added reserved `global` values-tree compatibility to all nine strict subchart schemas.
+- Kept source charts and vendored umbrella dependencies byte-identical after regeneration.
+- Preserved all embedded v0026-r1 Control Plane components and external Runtime bindings.
+- Added v0028-r1 provenance, validation, audit, release notes and deterministic package identity.
+
+See `RELEASE_NOTES_V0028_R1_DE.md` for the detailed engineering record.
+
 ## 0.27.3 / v0027-r3 — 2026-08-23
 
 - Published the byte-exact v0027-r3 release source and preserved v0026-r1 baseline.

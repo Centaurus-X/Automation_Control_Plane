@@ -59,9 +59,9 @@ manifest_digest() {
   docker buildx imagetools inspect "$1" --raw | sha256sum | awk '{print "sha256:" $1}'
 }
 
-master_ref="$registry/automation-master:0.26.0-v0027-r3"
-proxy_ref="$registry/automation-proxy:0.26.0-v0027-r3"
-mcp_ref="$registry/automation-mcp-controller:0.1.0-v0027-r3"
+master_ref="$registry/automation-master:0.26.0-v0028-r1"
+proxy_ref="$registry/automation-proxy:0.26.0-v0028-r1"
+mcp_ref="$registry/automation-mcp-controller:0.1.0-v0028-r1"
 
 build_and_push "$master_ref" "$control_dir/master_node/Dockerfile" \
   "$control_dir/master_node" "$master_base"

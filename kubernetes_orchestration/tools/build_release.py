@@ -1,4 +1,4 @@
-"""Create the deterministic v0027-r3 release ZIP and sidecar."""
+"""Create the deterministic v0028-r1 release ZIP and sidecar."""
 
 import argparse
 import hashlib
@@ -33,7 +33,8 @@ def _manifest(root):
     for path in files:
         relative = path.relative_to(root).as_posix()
         lines.append(_sha256(path) + "  ./" + relative)
-    release_manifest.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    release_manifest.write_text(
+        "\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     return len(files)
 
 
@@ -72,7 +73,7 @@ def main():
     root = pathlib.Path(arguments.root).resolve()
     output = pathlib.Path(arguments.output).resolve()
     tools = root / "kubernetes_orchestration" / "tools"
-    audit = root / "kubernetes_orchestration" / "documentation" / "FILE_AUDIT_V0027_R3.json"
+    audit = root / "kubernetes_orchestration" / "documentation" / "FILE_AUDIT_V0028_R1.json"
     vendor_helm_dependencies(root / "kubernetes_orchestration")
     build_file_audit(root, audit)
     _run_verifier(root, tools / "verify_release.py")
@@ -81,8 +82,9 @@ def main():
     output.parent.mkdir(parents=True, exist_ok=True)
     archive_files = _write_zip(root, output)
     digest = _sha256(output)
-    sidecar = output.with_suffix(".sha256")
-    sidecar.write_text(digest + "  " + output.name + "\n", encoding="utf-8")
+    sidecar = output.with_name(output.name + ".sha256")
+    sidecar.write_text(
+        digest + "  " + output.name + "\n", encoding="utf-8", newline="\n")
     print("Release ZIP: " + str(output))
     print("SHA-256: " + digest)
     print("Manifest files: " + str(manifest_files))

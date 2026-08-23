@@ -1,4 +1,4 @@
 """Functional Kubernetes fleet orchestration layer."""
 
-VERSION = "0.27.3"
-RELEASE_REVISION = "v0027-r3"
+VERSION = "0.28.0"
+RELEASE_REVISION = "v0028-r1"

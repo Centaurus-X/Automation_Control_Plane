@@ -151,7 +151,7 @@ def backup(root, step):
 def _metadata(step, manifest_digest):
     return {
         "schema_version": 1,
-        "managed_by": "automation-fleet-v0027-r3",
+        "managed_by": "automation-fleet-v0028-r1",
         "provider": step["provider"],
         "target_id": step["target_id"],
         "component_id": step["component_id"],

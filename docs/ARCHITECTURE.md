@@ -2,7 +2,7 @@
 
 ## Executive assessment
 
-Automation Control Plane `0.27.3 / v0027-r3` combines two deliberately separate
+Automation Control Plane `0.28.0 / v0028-r1` combines two deliberately separate
 layers:
 
 1. the byte-preserved `v0026-r1` platform for Proxy, Master, MQTTS,
@@ -28,7 +28,7 @@ flowchart TB
         AI["MCP client / agent"]
     end
 
-    subgraph Fleet["Kubernetes Orchestration Point · 0.27.3"]
+    subgraph Fleet["Kubernetes Orchestration Point · 0.28.0"]
         UI["Web UI / fleetctl"]
         Auth["Role tokens · sessions · CSRF"]
         Inventory["Inventory · catalog · desired state · policy"]
@@ -215,7 +215,7 @@ field-control latency claim.
 
 The release carries a complete root `SHA256SUMS`, an audit inventory and bound
 digests for the preserved Control Plane, external runtime and architecture
-inputs. `VALIDATION_RESULTS_V0027_R3.json` deliberately reports
+inputs. `VALIDATION_RESULTS_V0028_R1.json` deliberately reports
 `PASS_WITH_EXTERNAL_GATES_OPEN`: static and functional gates passed while live
 target infrastructure gates were skipped. This distinction is correct and
 should remain visible in every public release.

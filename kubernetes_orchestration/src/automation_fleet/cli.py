@@ -67,7 +67,7 @@ def _validate(config):
     )
     return {
         "ok": True,
-        "release": "v0027-r3",
+        "release": "v0028-r1",
         "plan_summary": plan_summary(plan),
         "mutations_enabled": config["allow_mutations"],
     }

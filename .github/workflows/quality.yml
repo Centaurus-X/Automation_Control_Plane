@@ -28,7 +28,7 @@ jobs:
       - name: Reconstruct canonical release root
         shell: bash
         run: |
-          expected="$RUNNER_TEMP/automation_control_plane_release_v0027_r3"
+          expected="$RUNNER_TEMP/automation_control_plane_release_v0028_r1"
           mkdir -p "$expected"
           git archive HEAD | tar -x -C "$expected"
           find "$expected" -type f -name '*.sh' -exec chmod 0755 {} +
@@ -48,7 +48,7 @@ jobs:
       - name: Check repository metadata and Mermaid sources
         shell: bash
         run: |
-          test "$(tr -d '\r\n' < VERSION)" = "0.27.3"
-          test "$(tr -d '\r\n' < RELEASE_REVISION)" = "v0027-r3"
+          test "$(tr -d '\r\n' < VERSION)" = "0.28.0"
+          test "$(tr -d '\r\n' < RELEASE_REVISION)" = "v0028-r1"
           test -s docs/diagrams/control-plane-components.mmd
           test -s docs/assets/control-plane-architecture.svg

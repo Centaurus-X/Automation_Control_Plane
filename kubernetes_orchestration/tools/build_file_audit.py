@@ -70,7 +70,7 @@ def build(root, output):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
         json.dumps(report, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
-        encoding="utf-8")
+        encoding="utf-8", newline="\n")
     return report
 
 

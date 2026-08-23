@@ -3,8 +3,8 @@ FROM ${PYTHON_RUNTIME_IMAGE}
 
 ARG PYTHON_RUNTIME_IMAGE
 LABEL org.opencontainers.image.title="automation-fleet" \
-      org.opencontainers.image.version="0.27.3" \
-      org.opencontainers.image.revision="v0027-r3"
+      org.opencontainers.image.version="0.28.0" \
+      org.opencontainers.image.revision="v0028-r1"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

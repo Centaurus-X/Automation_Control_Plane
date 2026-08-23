@@ -11,7 +11,7 @@
 <p align="center">
   <a href="README.md">English</a> ·
   <a href="docs/ARCHITECTURE.md">Architektur</a> ·
-  <a href="kubernetes_orchestration/documentation/VALIDATION_RESULTS_V0027_R3.json">Validierung</a> ·
+  <a href="kubernetes_orchestration/documentation/VALIDATION_RESULTS_V0028_R1.json">Validierung</a> ·
   <a href="SECURITY.md">Security</a>
 </p>
 
@@ -24,8 +24,11 @@ Dienst erzeugt unveränderliche, SHA-256-gebundene Rolloutpläne und führt sie
 über Helm, Argo CD, Flux oder outbound-only Cluster-Agenten aus. SEM, Safety,
 Scope-Revision, Feldbus und finale Aktuatorentscheidung bleiben im owning Worker.
 
-`0.27.3 / v0027-r3` erhält alle 588 Dateien der Control Plane `v0026-r1`
-byteidentisch. Das Automation-System-Runtime-Archiv bleibt separat und
+`0.28.0 / v0028-r1` erhält alle 588 Dateien der Control Plane `v0026-r1`
+byteidentisch und überführt den Linux-/Helm-Patch in ein eigenständiges,
+vollständiges Nachfolgerelease. Die Image-Templates sind Helm-parserfest;
+alle neun strikten Subchart-Schemas unterstützen Helms reservierten
+`global`-Wertebaum. Das Automation-System-Runtime-Archiv bleibt separat und
 digestgebunden.
 
 ## Kernnutzen

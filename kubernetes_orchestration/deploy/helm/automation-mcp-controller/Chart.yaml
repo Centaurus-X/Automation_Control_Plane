@@ -2,5 +2,5 @@ apiVersion: v2
 name: automation-mcp-controller
 description: Controlled MCP interface for the Automation Control Plane
 type: application
-version: 0.27.3
+version: 0.28.0
 appVersion: "0.1.0"

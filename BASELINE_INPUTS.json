@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release": "automation_control_plane_release_v0027_r3",
+  "release": "automation_control_plane_release_v0028_r1",
   "parent_release": {
-    "archive_name": "automation_control_plane_release_v0027_r2(1).zip",
-    "archive_sha256": "81dae99f922990a793ed4d77cf56659b9aa50b7d09cedcad4031bbdd61f769e6"
+    "archive_name": "automation_control_plane_release_v0027_r3.zip",
+    "archive_sha256": "eb7b3ed52273dc6cdd6dd22516bc50cb516ccee58de2d11697fb074d8196a971"
   },
   "preserved_control_plane": {
     "archive_name": "automation_control_plane_release_v0026_r1(2).zip",

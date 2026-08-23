@@ -95,4 +95,4 @@ else
   echo "SKIP preserved Docker-dependent control tests: RUN_PRESERVED_CONTROL_TESTS is not 1"
 fi
 
-echo "PASS automation_control_plane_release_v0027_r3 release test suite"
+echo "PASS automation_control_plane_release_v0028_r1 release test suite"

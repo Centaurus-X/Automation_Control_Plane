@@ -236,7 +236,7 @@ def build_plan(root, inventory_value, catalog_value, desired_value, policy_value
         "allow_kubernetes_hard_rt": False,
         "allowed_write_owners": ["helm", "gitops_argocd", "gitops_flux"],
         "max_agent_task_wait_s": 1800,
-        "field_manager": "automation-fleet-v0027-r3",
+        "field_manager": "automation-fleet-v0028-r1",
     })
     components = _selected_components(catalog, desired)
     descriptor_values = {}

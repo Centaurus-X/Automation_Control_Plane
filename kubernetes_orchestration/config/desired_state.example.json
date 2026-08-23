@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "deployment_id": "site-main-control-plane",
-  "release_ref": "automation-control-plane-v0027-r3",
+  "release_ref": "automation-control-plane-v0028-r1",
   "placement": {
     "target_ids": ["cluster-lab-01"]
   },
