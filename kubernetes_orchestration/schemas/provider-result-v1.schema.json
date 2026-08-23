@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:automation:fleet:provider-result:v1",
+  "title": "Automation Fleet Provider Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "step_id", "idempotency_key", "fencing_token", "target_id", "component_id", "provider", "execution_mode", "requested_chart_digest", "status", "result", "evidence_digest"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "plan_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "step_id": {"type": "string"},
+    "idempotency_key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "target_id": {"type": "string"},
+    "component_id": {"type": "string"},
+    "provider": {"enum": ["kubernetes_helm", "gitops_argocd", "gitops_flux"]},
+    "execution_mode": {"enum": ["direct", "agent"]},
+    "requested_chart_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "status": {"enum": ["SUCCEEDED", "FAILED", "ROLLED_BACK", "MANUAL_RECOVERY"]},
+    "result": {"type": "object"},
+    "evidence_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

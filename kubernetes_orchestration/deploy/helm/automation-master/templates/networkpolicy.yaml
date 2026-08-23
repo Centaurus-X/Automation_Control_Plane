@@ -1,0 +1,31 @@
+{{- if .Values.enabled }}
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: automation-master
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes: ["Ingress", "Egress"]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: automation-observability
+      ports:
+        - {protocol: TCP, port: 9090}
+  egress:
+    - ports:
+        - {protocol: TCP, port: 5432}
+        - {protocol: TCP, port: 8883}
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+{{- end }}
+
+{{- end }}

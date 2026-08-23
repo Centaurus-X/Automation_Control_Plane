@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "automation.proxy.websocket.v1/event_filter_update.schema.json",
+  "title": "Automation Proxy WSS event filter update",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "type", "request_id", "filters"],
+  "properties": {
+    "protocol": {"const": "automation.proxy.websocket.v1"},
+    "type": {"const": "subscribe"},
+    "request_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "filters": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resource_type", "resource_pattern"],
+        "properties": {
+          "resource_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[^/#+]+$"
+          },
+          "resource_pattern": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[^/#+]+$"
+          }
+        }
+      }
+    }
+  }
+}

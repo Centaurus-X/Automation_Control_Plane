@@ -1,0 +1,93 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "automation-master-node-0.26.0-v0026-r1",
+  "documentNamespace": "https://automation.invalid/spdx/master-node/0.26.0/v0026-r1",
+  "creationInfo": {
+    "created": "2026-08-15T00:00:00Z",
+    "creators": [
+      "Tool: release-manifest"
+    ]
+  },
+  "packages": [
+    {
+      "name": "automation-master-node",
+      "SPDXID": "SPDXRef-Master",
+      "versionInfo": "0.26.0-v0026-r1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION"
+    },
+    {
+      "name": "CPython",
+      "SPDXID": "SPDXRef-Python",
+      "versionInfo": "3.14.6 free-threaded",
+      "downloadLocation": "https://www.python.org/ftp/python/3.14.6/Python-3.14.6.tar.xz",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "143b1dddefaec3bd2e21e3b839b34a2b7fb9842272883c576420d605e9f30c63"
+        }
+      ],
+      "filesAnalyzed": false,
+      "licenseConcluded": "PSF-2.0",
+      "licenseDeclared": "PSF-2.0"
+    },
+    {
+      "name": "psycopg",
+      "SPDXID": "SPDXRef-Psycopg",
+      "versionInfo": "3.3.4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "LGPL-3.0-or-later"
+    },
+    {
+      "name": "psycopg-pool",
+      "SPDXID": "SPDXRef-PsycopgPool",
+      "versionInfo": "3.3.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "LGPL-3.0-or-later"
+    },
+    {
+      "name": "libpq",
+      "SPDXID": "SPDXRef-Libpq",
+      "versionInfo": "Debian bookworm libpq-dev/libpq5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "PostgreSQL",
+      "licenseDeclared": "PostgreSQL"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Master"
+    },
+    {
+      "spdxElementId": "SPDXRef-Master",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Python"
+    },
+    {
+      "spdxElementId": "SPDXRef-Master",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Psycopg"
+    },
+    {
+      "spdxElementId": "SPDXRef-Master",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-PsycopgPool"
+    },
+    {
+      "spdxElementId": "SPDXRef-Master",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Libpq"
+    }
+  ]
+}

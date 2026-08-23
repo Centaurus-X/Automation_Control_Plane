@@ -1,0 +1,109 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-master
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy: {type: Recreate}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-master
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: automation-master
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/part-of: automation-platform
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: master
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - {name: AUTOMATION_SITE_ID, value: {{ .Values.siteId | quote }}}
+            - {name: MASTER_INSTANCE_ID, value: {{ .Values.masterInstanceId | quote }}}
+            - {name: LEGACY_COORDINATOR_NODE_ID, value: {{ .Values.masterInstanceId | quote }}}
+            - {name: MASTER_RELEASE_PROFILE, value: {{ .Values.releaseProfile | quote }}}
+            - {name: MASTER_INITIAL_CONFIG_PATH, value: /run/secrets/master_initial_config}
+            - {name: MASTER_AUTO_ADMIT_BROKER_BOUND_WORKERS, value: "true"}
+            - {name: MQTT_HOST, value: {{ .Values.mqtt.host | quote }}}
+            - {name: MQTT_PORT, value: {{ .Values.mqtt.port | quote }}}
+            - {name: MQTT_REQUIRED, value: {{ .Values.mqtt.required | quote }}}
+            - {name: MQTT_TLS_ENABLED, value: "true"}
+            - {name: MQTT_ALLOW_INSECURE_TRANSPORT, value: "false"}
+            - {name: MASTER_DB_HOST, value: {{ .Values.database.host | quote }}}
+            - {name: MASTER_DB_PORT, value: {{ .Values.database.port | quote }}}
+            - {name: MASTER_DB_NAME, value: {{ .Values.database.name | quote }}}
+            - {name: MASTER_DB_USER, value: {{ .Values.database.appUser | quote }}}
+            - {name: MASTER_DB_PASSWORD_FILE, value: /run/secrets/master_db_password}
+            - {name: MASTER_DB_SSLMODE, value: verify-full}
+            - {name: MASTER_DB_SSLROOTCERT, value: /run/secrets/postgres_ca}
+          ports:
+            - {name: metrics, containerPort: 9090, protocol: TCP}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet: {path: /health/ready, port: metrics}
+            failureThreshold: 24
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /health/live, port: metrics}
+            periodSeconds: 15
+          readinessProbe:
+            httpGet: {path: /health/ready, port: metrics}
+            periodSeconds: 10
+          volumeMounts:
+            - {name: runtime, mountPath: /app/master_node/_runtime}
+            - {name: database, mountPath: /run/secrets/master_db_password, subPath: app-password, readOnly: true}
+            - {name: database, mountPath: /run/secrets/postgres_ca, subPath: ca.crt, readOnly: true}
+            - {name: mqtt, mountPath: /run/secrets/mqtt_ca, subPath: ca.crt, readOnly: true}
+            - {name: mqtt, mountPath: /run/secrets/master_mqtt_cert, subPath: tls.crt, readOnly: true}
+            - {name: mqtt, mountPath: /run/secrets/master_mqtt_key, subPath: tls.key, readOnly: true}
+            - {name: initial-config, mountPath: /run/secrets/master_initial_config, subPath: initial_config_v9.json, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: runtime
+          persistentVolumeClaim: {claimName: {{ .Release.Name }}-runtime}
+        - name: database
+          secret:
+            secretName: {{ .Values.secretRefs.database }}
+            defaultMode: 0440
+        - name: mqtt
+          secret:
+            secretName: {{ .Values.secretRefs.mqtt }}
+            defaultMode: 0440
+        - name: initial-config
+          secret:
+            secretName: {{ .Values.secretRefs.initialConfig }}
+            defaultMode: 0440
+        - name: tmp
+          emptyDir: {medium: Memory, sizeLimit: 256Mi}
+
+{{- end }}

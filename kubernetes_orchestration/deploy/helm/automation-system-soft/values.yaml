@@ -1,0 +1,29 @@
+enabled: true
+replicaCount: 1
+image:
+  repository: registry.example.invalid/automation/system
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+runtimeArchiveDigest: "sha256:c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467"
+runtimeProfile: container_simulation
+automationProfile: worker_simulation
+siteId: site-main
+nodeId: fn-01
+mqtt:
+  enabled: true
+secretRefs:
+  mqtt: automation-worker-mqtt
+persistence:
+  configSize: 2Gi
+  stateSize: 8Gi
+  storageClassName: ""
+resources:
+  requests: {cpu: "1", memory: 512Mi}
+  limits: {cpu: "2", memory: 2Gi}
+networkPolicy:
+  enabled: true
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}

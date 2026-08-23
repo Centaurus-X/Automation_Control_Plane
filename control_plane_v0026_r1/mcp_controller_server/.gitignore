@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+dist/
+build/
+*.egg-info/
+runtime/
+runtime-secrets/
+secrets/*.json
+secrets/*.crt
+secrets/*.key

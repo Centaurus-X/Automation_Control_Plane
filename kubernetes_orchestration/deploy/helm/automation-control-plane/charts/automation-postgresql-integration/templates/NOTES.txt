@@ -1,0 +1,6 @@
+{{- if .Values.enabled }}
+This chart does not own PostgreSQL data or lifecycle.
+It maps {{ .Values.service.name }} to the externally managed endpoint
+{{ .Values.external.host }}:{{ .Values.external.port }}.
+TLS, backup, restore, HA and credentials remain operator/managed-service contracts.
+{{- end }}

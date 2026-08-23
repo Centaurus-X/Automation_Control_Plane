@@ -1,0 +1,120 @@
+name: automation-postgres
+
+x-postgres-common: &postgres-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: ${POSTGRES_IMAGE:-automation-postgres:18.4-v14}
+  restart: unless-stopped
+  stop_grace_period: 60s
+  security_opt:
+    - no-new-privileges:true
+  networks:
+    database_private: {}
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,size=128m
+    - /var/run/postgresql:rw,noexec,nosuid,size=16m,uid=999,gid=999
+
+services:
+  postgres-primary:
+    <<: *postgres-common
+    hostname: postgres-primary
+    environment:
+      POSTGRES_NODE_ROLE: primary
+      POSTGRES_DB: automation_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_superuser_password
+      POSTGRES_BACKUP_HOST_UID: "${POSTGRES_BACKUP_HOST_UID:-1000}"
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=peer --data-checksums
+      PGDATA: /var/lib/postgresql/18/docker
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/custom/postgresql-primary.conf
+    secrets:
+      - postgres_superuser_password
+      - replication_password
+      - master_migrator_password
+      - master_app_password
+      - proxy_migrator_password
+      - proxy_app_password
+    volumes:
+      - postgres_primary_data:/var/lib/postgresql
+      - postgres_tls_runtime:/var/lib/postgresql/tls
+      - postgres_wal_archive:/archive
+      - ./config:/etc/postgresql/custom:ro
+      - ./init:/docker-entrypoint-initdb.d:ro
+      - ./tls:/run/automation-tls:ro
+      - ./backup:/backup
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d automation_platform"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+      start_period: 20s
+    networks:
+      database_private:
+        aliases:
+          - automation-postgres
+
+  postgres-standby:
+    <<: *postgres-common
+    hostname: postgres-standby
+    environment:
+      POSTGRES_NODE_ROLE: standby
+      POSTGRES_DB: automation_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_superuser_password
+      POSTGRES_BACKUP_HOST_UID: "${POSTGRES_BACKUP_HOST_UID:-1000}"
+      PGDATA: /var/lib/postgresql/18/docker
+      PRIMARY_HOST: postgres-primary
+      PRIMARY_PORT: "5432"
+      PGPASSFILE: /var/lib/postgresql/.pgpass
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/custom/postgresql-standby.conf
+    secrets:
+      - postgres_superuser_password
+      - replication_password
+    volumes:
+      - postgres_standby_data:/var/lib/postgresql
+      - postgres_standby_tls_runtime:/var/lib/postgresql/tls
+      - ./config:/etc/postgresql/custom:ro
+      - ./tls:/run/automation-tls:ro
+      - ./backup:/backup
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d automation_platform"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+      start_period: 30s
+
+volumes:
+  postgres_primary_data:
+  postgres_standby_data:
+  postgres_tls_runtime:
+  postgres_standby_tls_runtime:
+  postgres_wal_archive:
+
+networks:
+  database_private:
+    external: true
+    name: automation_database
+
+secrets:
+  postgres_superuser_password:
+    file: ./secrets/postgres_superuser_password
+  replication_password:
+    file: ./secrets/replication_password
+  master_migrator_password:
+    file: ./secrets/master_migrator_password
+  master_app_password:
+    file: ./secrets/master_app_password
+  proxy_migrator_password:
+    file: ./secrets/proxy_migrator_password
+  proxy_app_password:
+    file: ./secrets/proxy_app_password

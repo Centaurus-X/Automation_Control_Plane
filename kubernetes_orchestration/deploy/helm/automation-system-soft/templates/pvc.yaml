@@ -1,0 +1,38 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app.kubernetes.io/name: automation-system
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: ["ReadWriteOnce"]
+  {{- if .Values.persistence.storageClassName }}
+  storageClassName: {{ .Values.persistence.storageClassName | quote }}
+  {{- end }}
+  resources:
+    requests: {storage: {{ .Values.persistence.configSize }}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-state
+  labels:
+    app.kubernetes.io/name: automation-system
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: ["ReadWriteOnce"]
+  {{- if .Values.persistence.storageClassName }}
+  storageClassName: {{ .Values.persistence.storageClassName | quote }}
+  {{- end }}
+  resources:
+    requests: {storage: {{ .Values.persistence.stateSize }}}
+
+{{- end }}

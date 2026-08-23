@@ -1,0 +1,114 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-mcp-controller
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy: {type: Recreate}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-mcp-controller
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: automation-mcp-controller
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/part-of: automation-platform
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 20
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: stage-secrets
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              install -m 0644 /mqtt/ca.crt /staged/mqtt_ca
+              install -m 0644 /mqtt/tls.crt /staged/mcp_mqtt_cert
+              install -m 0600 /mqtt/tls.key /staged/mcp_mqtt_key
+              install -m 0600 /auth/mcp_auth.json /staged/mcp_auth
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: mqtt-source, mountPath: /mqtt, readOnly: true}
+            - {name: auth-source, mountPath: /auth, readOnly: true}
+            - {name: secrets-runtime, mountPath: /staged}
+            - {name: tmp, mountPath: /tmp}
+      containers:
+        - name: mcp-controller
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - {name: AUTOMATION_SITE_ID, value: {{ .Values.siteId | quote }}}
+            - {name: MASTER_INSTANCE_ID, value: {{ .Values.masterInstanceId | quote }}}
+            - {name: MCP_MQTT_SOURCE_INSTANCE_ID, value: {{ .Values.instanceId | quote }}}
+            - {name: MQTT_HOST, value: {{ .Values.mqtt.host | quote }}}
+            - {name: MQTT_PORT, value: {{ .Values.mqtt.port | quote }}}
+            - {name: MQTT_SERVER_HOSTNAME, value: {{ .Values.mqtt.serverHostname | quote }}}
+            - {name: MQTT_CA_FILE, value: /run/secrets/mqtt_ca}
+            - {name: MCP_MQTT_CERT_FILE, value: /run/secrets/mcp_mqtt_cert}
+            - {name: MCP_MQTT_KEY_FILE, value: /run/secrets/mcp_mqtt_key}
+            - {name: MCP_AUTH_FILE, value: /run/secrets/mcp_auth}
+          ports:
+            - {name: http, containerPort: 8080, protocol: TCP}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet: {path: /health/ready, port: http}
+            failureThreshold: 24
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /health/live, port: http}
+            periodSeconds: 15
+          readinessProbe:
+            httpGet: {path: /health/ready, port: http}
+            periodSeconds: 10
+          volumeMounts:
+            - {name: state, mountPath: /app/state}
+            - {name: secrets-runtime, mountPath: /run/secrets, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: state
+          persistentVolumeClaim: {claimName: {{ .Release.Name }}-state}
+        - name: mqtt-source
+          secret:
+            secretName: {{ .Values.secretRefs.mqtt }}
+            defaultMode: 0440
+        - name: auth-source
+          secret:
+            secretName: {{ .Values.secretRefs.auth }}
+            defaultMode: 0440
+        - name: secrets-runtime
+          emptyDir: {medium: Memory, sizeLimit: 4Mi}
+        - name: tmp
+          emptyDir: {medium: Memory, sizeLimit: 64Mi}
+
+{{- end }}

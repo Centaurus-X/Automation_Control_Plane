@@ -1,0 +1,112 @@
+{
+  "site_id": "site-main",
+  "instance_id": "proxy-01",
+"master_instance_id": "master-01",
+  "authority_mode": "node_local",
+  "mqtt": {
+    "host": "mqtt-broker",
+    "port": 8883,
+    "required": true,
+    "keepalive_s": 30,
+    "connect_timeout_s": 5.0,
+    "socket_timeout_s": 2.0,
+    "reconnect_min_s": 1.0,
+    "reconnect_max_s": 30.0,
+    "command_queue_maxsize": 512,
+    "outbound_queue_maxsize": 4096,
+    "max_packet_size": 4194304,
+    "replay_ttl_s": 3600,
+    "allow_insecure_transport": false,
+    "tls": {
+      "enabled": true,
+      "ca_file": "/run/secrets/mqtt_ca",
+      "cert_file": "/run/secrets/proxy_mqtt_cert",
+      "key_file": "/run/secrets/proxy_mqtt_key",
+      "server_hostname": "mqtt-broker",
+      "insecure_skip_verify": false
+    }
+  },
+  "wss": {
+    "enabled": true,
+    "primary": true,
+    "host": "0.0.0.0",
+    "port": 8443,
+    "origin_allowlist": ["https://192.168.0.82:8444"],
+    "session_cookie": "automation_session",
+    "max_connections": 4096,
+    "max_connections_per_source": 256,
+    "max_connections_per_principal": 128,
+    "max_message_bytes": 1048576,
+    "protocol_queue_maxsize": 16,
+    "response_queue_maxsize": 64,
+    "event_live_queue_maxsize": 256,
+    "write_limit_bytes": 32768,
+    "handshake_concurrency": 64,
+    "command_concurrency": 128,
+    "open_timeout_s": 5.0,
+    "close_timeout_s": 10.0,
+    "initial_message_timeout_s": 5.0,
+    "handshake_queue_timeout_s": 1.0,
+    "command_queue_timeout_s": 1.0,
+    "command_drain_timeout_s": 30.0,
+    "ping_interval_s": 20.0,
+    "ping_timeout_s": 20.0,
+    "send_timeout_s": 5.0,
+    "principal_revalidate_interval_s": 30.0,
+    "max_connection_age_s": 1800.0,
+    "replay_page_size": 200,
+    "replay_page_limit": 1000,
+    "replay_record_limit": 100000,
+    "replay_timeout_s": 60.0,
+    "tls": {
+      "certfile": "/run/secrets/proxy_wss_cert",
+      "keyfile": "/run/secrets/proxy_wss_key",
+      "minimum_tls_version": "TLSv1_2",
+      "require_client_cert": false
+    }
+  },
+  "https": {
+    "enabled": true,
+    "secondary": true,
+    "host": "0.0.0.0",
+    "port": 8444,
+    "websocket_enabled": false,
+    "tls_enabled": true,
+    "allow_insecure_http": false,
+    "cert_file": "/run/secrets/proxy_https_cert",
+    "key_file": "/run/secrets/proxy_https_key",
+    "origin_allowlist": ["https://192.168.0.82:8444"],
+    "max_json_bytes": 1048576,
+    "api_rate_limit": 120,
+    "api_rate_window_s": 60,
+    "session_cookie": "automation_session",
+    "csrf_cookie": "automation_csrf",
+    "session_max_age_s": 1800,
+    "startup_timeout_s": 15.0,
+    "limit_concurrency": 256,
+    "backlog": 128
+  },
+  "auth": {
+    "password_pepper_file": "/run/secrets/password_pepper",
+    "token_pepper_file": "/run/secrets/token_pepper",
+    "binding_pepper_file": "/run/secrets/binding_pepper",
+    "minimum_password_length": 14,
+    "sliding_session_s": 1800,
+    "absolute_session_s": 43200,
+    "max_login_failures": 5,
+    "lock_seconds": 300,
+    "login_rate_limit": 10,
+    "login_rate_window_s": 300
+  },
+  "stream": {
+    "queue_maxsize": 256,
+    "coalesced_maxsize": 256,
+    "replay_limit": 200
+  },
+  "maintenance": {
+    "interval_s": 300
+  },
+  "logging": {
+    "level": "INFO"
+  }
+}

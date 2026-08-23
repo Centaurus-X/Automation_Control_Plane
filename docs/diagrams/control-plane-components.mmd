@@ -1,0 +1,74 @@
+flowchart TB
+    subgraph People["Human and automation clients"]
+        Operator["Operator"]
+        Approver["Approver"]
+        Auditor["Auditor / Viewer"]
+        Engineering["Engineering client"]
+        AI["MCP client / agent"]
+    end
+    subgraph Fleet["Kubernetes Orchestration Point · 0.27.3"]
+        UI["Web UI / fleetctl"]
+        Auth["Role tokens · sessions · CSRF"]
+        Inventory["Inventory · catalog · desired state · policy"]
+        Placement["Deterministic placement + exclusions"]
+        Planner["Plan v2 + SHA-256 identity"]
+        Approval["Four-eyes + per-wave approval"]
+        Journal[("SQLite saga journal<br/>audit hash chain · evidence")]
+        Executor["Nine-step executor"]
+        Helm["Direct Helm provider"]
+        GitOps["Argo CD / Flux provider"]
+        AgentAPI["Outbound agent task boundary"]
+        Collector["Live resource collector + metrics"]
+        UI --> Auth --> Inventory
+        Inventory --> Placement --> Planner --> Approval
+        Approval --> Journal --> Executor
+        Executor --> Helm
+        Executor --> GitOps
+        Executor --> AgentAPI
+        Collector --> UI
+        Executor --> Journal
+    end
+    subgraph Target["Target Kubernetes namespace"]
+        Agent["Cluster agent<br/>leader lease · epoch · HMAC · fencing"]
+        K8s["Kubernetes API<br/>namespaced resources only"]
+        ControlWorkloads["Proxy · Master · MQTT · MCP · Observability"]
+        SoftWorker["Optional soft-RT/simulation Worker"]
+        Agent --> K8s
+        K8s --> ControlWorkloads
+        K8s --> SoftWorker
+    end
+    subgraph Platform["Runtime communication and durable platform"]
+        Proxy["Proxy Gateway<br/>authentication · RBAC · HTTPS/WSS"]
+        Master["Master<br/>registry · relay · mirror · audit"]
+        Broker["MQTTS broker<br/>mTLS · ACL · QoS 1"]
+        Database[("PostgreSQL<br/>platform durability")]
+        MCP["MCP Controller<br/>prepare · approve · commit"]
+        Proxy --> Master
+        Master <--> Broker
+        Master <--> Database
+        Proxy <--> Database
+        MCP <--> Broker
+    end
+    subgraph WorkerBoundary["Owning Worker · separate runtime release"]
+        Worker["Local authority coordinator"]
+        SEM["SEM single writer + safety policy"]
+        Runtime["Rules · FSM · automation"]
+        Field["Protocol adapters · PLC · sensors · actuators"]
+        Worker --> SEM --> Runtime --> Field
+    end
+    Operator --> UI
+    Approver --> UI
+    Auditor --> UI
+    Engineering --> Proxy
+    AI --> MCP
+    Helm --> K8s
+    GitOps --> K8s
+    AgentAPI <-->|"signed polling tasks/results"| Agent
+    K8s --> Collector
+    ControlWorkloads --> Proxy
+    ControlWorkloads --> Master
+    ControlWorkloads --> Broker
+    ControlWorkloads --> MCP
+    SoftWorker <--> Broker
+    Broker <--> Worker
+    Worker -.->|"local loop survives management outage"| Runtime

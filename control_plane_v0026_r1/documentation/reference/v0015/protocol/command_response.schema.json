@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "automation.proxy.websocket.v1/command_response.schema.json",
+  "title": "Automation Proxy WSS command response",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "type", "client_id", "endpoint"],
+      "properties": {
+        "protocol": {"const": "automation.proxy.websocket.v1"},
+        "type": {"const": "connection.ready"},
+        "client_id": {"type": "string", "format": "uuid"},
+        "endpoint": {"const": "control"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "type", "request_id", "action", "state"],
+      "properties": {
+        "protocol": {"const": "automation.proxy.websocket.v1"},
+        "type": {"const": "command.accepted"},
+        "request_id": {"type": "string"},
+        "action": {"type": "string"},
+        "operation_id": {"type": ["string", "null"]},
+        "state": {"type": "string"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "type", "request_id", "action", "result"],
+      "properties": {
+        "protocol": {"const": "automation.proxy.websocket.v1"},
+        "type": {"const": "command.result"},
+        "request_id": {"type": "string"},
+        "action": {"type": "string"},
+        "result": {"type": "object"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "type", "code"],
+      "properties": {
+        "protocol": {"const": "automation.proxy.websocket.v1"},
+        "type": {"const": "command.rejected"},
+        "request_id": {"type": ["string", "null"]},
+        "action": {"type": ["string", "null"]},
+        "code": {"type": "string"},
+        "message": {"type": ["string", "null"]},
+        "details": {"type": ["object", "null"]}
+      }
+    }
+  ]
+}

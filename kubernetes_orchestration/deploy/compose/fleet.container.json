@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "listen": {"host": "0.0.0.0", "port": 9080},
+  "inventory_path": "/etc/automation-fleet/inventory.example.json",
+  "catalog_path": "/opt/automation-fleet/config/release_catalog.json",
+  "desired_state_path": "/etc/automation-fleet/desired_state.example.json",
+  "policy_path": "/etc/automation-fleet/policy.example.json",
+  "admin_token_file": "/run/secrets/admin.token",
+  "operator_token_file": "/run/secrets/operator.token",
+  "approver_token_file": "/run/secrets/approver.token",
+  "auditor_token_file": "/run/secrets/auditor.token",
+  "viewer_token_file": "/run/secrets/viewer.token",
+  "agent_registry_path": "/etc/automation-fleet/agent_registry.example.json",
+  "state_dir": "/var/lib/automation-fleet",
+  "observe_timeout_s": 30
+}

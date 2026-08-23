@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "component": "mcp_controller_server",
+  "version": "0.1.0",
+  "release_revision": "v0001-r1",
+  "built_at": "2026-08-12T00:16:30Z",
+  "system_boundary": "mqtt_only",
+  "automation_contract": "automation.control.v1",
+  "mcp_protocols": [
+    "2026-07-28",
+    "2025-11-25",
+    "2025-06-18",
+    "2025-03-26"
+  ],
+  "source_archives": {
+    "automation_control_plane_release_v0025_r1(3).zip": "1e4396d25a0d2a896a139d46188d7e1d90c4c5580a5e82ab7a50a5082fb7473d",
+    "automation_system_v0101(3).zip": "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467"
+  },
+  "integration": {
+    "bundle_version": "0.26.0",
+    "bundle_revision": "v0026-r1",
+    "component_path": "mcp_controller_server",
+    "orchestration_component": "mcp_controller_server",
+    "mqtt_identity": "urn:automation:site-main:proxy:mcp-controller-01"
+  }
+}

@@ -1,0 +1,6 @@
+Automation Control Plane umbrella release {{ .Release.Name }}
+
+Each dependency remains independently installable and independently owned.
+This umbrella chart does not create CRDs, admission webhooks or cluster-scoped RBAC.
+The automation_system runtime remains a separately built and digest-bound image.
+Database lifecycle and rollback remain outside the umbrella chart.

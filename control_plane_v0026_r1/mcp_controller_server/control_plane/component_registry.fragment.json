@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "component_name": "mcp_controller_server",
+  "depends_on": [
+    "proxy"
+  ],
+  "target_role": "control_plane",
+  "rollout_strategy": "serial",
+  "reversible": true,
+  "actions": {
+    "preflight": {
+      "timeout_s": 300
+    },
+    "backup": {
+      "timeout_s": 600
+    },
+    "apply": {
+      "timeout_s": 3600
+    },
+    "ready": {
+      "timeout_s": 600
+    },
+    "status": {
+      "timeout_s": 300
+    },
+    "test": {
+      "timeout_s": 1800
+    },
+    "restart": {
+      "timeout_s": 900
+    },
+    "rollback": {
+      "timeout_s": 1800
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "worker_root": "/home/operator/automation_system_v0101",
+  "worker_archive": "/home/operator/automation_system_v0101.zip",
+  "expected_archive_sha256": "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467",
+  "app_config_relative_path": "_config/application/app_config.yaml",
+  "active_profile": "worker_simulation",
+  "bootstrap_module": "src.system.bootstrap_system_interface",
+  "main_module": "src.sync_xserver_main",
+  "normal_stop_command": ["/home/operator/bin/stop-fn01"],
+  "normal_start_command": ["/home/operator/bin/start-fn01"],
+  "normal_status_command": ["/home/operator/bin/status-fn01"],
+  "private_runtime_dir": "/home/operator/.local/state/automation-e2e-v0025",
+  "recovery_file": "/home/operator/.local/state/automation-e2e-v0025/worker-recovery.json"
+}

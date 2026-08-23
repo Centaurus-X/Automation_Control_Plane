@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "node-agent",
+  "providers": ["linux_systemd"],
+  "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": [], "management": ["automation-fleet"], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["linux-systemd", "runtime-ab-slots"]},
+  "health_contract": {"mode": "local-preflight-process-and-slot-attestation"},
+  "rollback_contract": {"application_reversible": true, "runtime_state_reversible": false},
+  "security_contract": {"final_node_authority": true, "hard_rt_outside_kubernetes": true, "signed_release_required": true}
+}

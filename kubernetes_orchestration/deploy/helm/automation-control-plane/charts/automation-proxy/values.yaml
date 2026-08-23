@@ -1,0 +1,38 @@
+enabled: true
+replicaCount: 1
+image:
+  repository: registry.example.invalid/automation/proxy
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+siteId: site-main
+proxyInstanceId: proxy-01
+masterInstanceId: master-01
+originAllowlist: "https://automation.example.invalid"
+database:
+  host: automation-postgres
+  port: 5432
+  name: automation_platform
+  appUser: proxy_app
+  migratorUser: proxy_migrator
+mqtt:
+  host: automation-mqtt
+  port: 8883
+  required: true
+secretRefs:
+  database: automation-proxy-database
+  mqtt: automation-proxy-mqtt
+  https: automation-proxy-https
+  wss: automation-proxy-wss
+  security: automation-proxy-security
+persistence:
+  size: 4Gi
+  storageClassName: ""
+service:
+  type: ClusterIP
+resources:
+  requests: {cpu: 250m, memory: 256Mi}
+  limits: {cpu: 2, memory: 1Gi}
+networkPolicy:
+  enabled: true
+podAnnotations: {}

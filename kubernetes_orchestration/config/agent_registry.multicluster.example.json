@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "agents": [
+    {
+      "target_id": "cluster-edge-agent",
+      "token_file": "/run/agent-tokens/cluster-edge-agent.token",
+      "enabled": true,
+      "tls_subject": null
+    }
+  ]
+}

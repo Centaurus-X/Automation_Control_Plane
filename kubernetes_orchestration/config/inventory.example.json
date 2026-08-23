@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "environment_id": "test-lab",
+  "targets": [
+    {
+      "target_id": "cluster-lab-01",
+      "target_kind": "kubernetes",
+      "site_id": "site-main",
+      "cluster_id": "cluster-lab-01",
+      "failure_domain": "lab-zone-a",
+      "context": "automation-lab",
+      "namespace": "automation-system",
+      "write_owner": "helm",
+      "execution_mode": "direct",
+      "wave": 0,
+      "capabilities": [
+        "persistent-storage",
+        "network-policy"
+      ],
+      "labels": {
+        "environment": "test",
+        "rt-workloads": "soft-only"
+      }
+    }
+  ]
+}

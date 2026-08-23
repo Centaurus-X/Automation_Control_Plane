@@ -1,0 +1,17 @@
+{{- if .Values.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: automation-mqtt
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automation-mqtt
+      app.kubernetes.io/instance: {{ .Release.Name }}
+
+{{- end }}

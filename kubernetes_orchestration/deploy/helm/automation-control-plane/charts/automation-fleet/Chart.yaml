@@ -1,0 +1,6 @@
+apiVersion: v2
+name: automation-fleet
+description: Namespace-scoped Automation Fleet API and Web UI
+type: application
+version: 0.27.3
+appVersion: "0.27.3"

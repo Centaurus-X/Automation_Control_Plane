@@ -1,0 +1,32 @@
+[Unit]
+Description=Automation Fleet Outbound Kubernetes Cluster Agent
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=automation-fleet
+Group=automation-fleet
+WorkingDirectory=/opt/automation-control-plane/kubernetes_orchestration
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONNOUSERSITE=1
+Environment=PYTHONPATH=/opt/automation-control-plane/kubernetes_orchestration/src
+ExecStart=/usr/bin/python3 -m automation_fleet.cluster_agent --root /opt/automation-control-plane/kubernetes_orchestration --config /etc/automation-fleet/cluster-agent.json
+KillSignal=SIGTERM
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=false
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/automation-fleet-agent /tmp
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

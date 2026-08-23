@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "environment": "test-lab",
+  "release_root": "..",
+  "state_dir": "../../.local/state/automation-control-plane/administration/example",
+  "targets": [
+    {
+      "target_id": "control-plane-01",
+      "role": "control_plane",
+      "host": "control-plane.test.invalid",
+      "adapter": {
+        "transport": "local",
+        "deployment_profile": "test",
+        "mqtt_bind_address": "192.0.2.10",
+        "mqtt_test_host": "192.0.2.10",
+        "mqtt_test_broker_ip": "192.0.2.10",
+        "mcp_bind_address": "127.0.0.1",
+        "mcp_http_port": "8080",
+        "mcp_source_instance_id": "mcp-controller-01",
+        "mcp_auth_source": "$HOME/.config/automation-control-plane/mcp_auth.json"
+      },
+      "components": [
+        "database",
+        "mqtt",
+        "master",
+        "proxy",
+        "mcp_controller_server"
+      ]
+    },
+    {
+      "target_id": "worker-fn-01",
+      "role": "worker",
+      "host": "automation@worker-fn-01.test.invalid",
+      "node_id": "fn-01",
+      "adapter": {
+        "transport": "ssh",
+        "worker_path": "python-skripte_22/__NEW_FILES__/automation_system_v0101",
+        "site_id": "site-main",
+        "profile": "worker_simulation",
+        "pki_stage_path": ".cache/automation-control-plane/pki/site-main/fn-01",
+        "pki_source_path": "/secure/runtime/automation-pki/site-main/fn-01",
+        "worker_log_path": ".local/state/automation-worker/site-main/fn-01/worker.log",
+        "config_drift_policy": "preserve"
+      },
+      "components": [
+        "worker"
+      ]
+    }
+  ],
+  "config_files": [
+    {
+      "config_id": "master-canonical-v9",
+      "path": "master_node/master_node/_config/application/initial_config_v9.json",
+      "sha256": "__MASTER_CANONICAL_V9_SHA256__"
+    },
+    {
+      "config_id": "worker-fn-01-v9",
+      "path": "runtime/config/device_state_data_v9_node_fn-01.json",
+      "sha256": "__WORKER_FN_01_V9_SHA256__"
+    },
+    {
+      "config_id": "cross-fn-01-v8",
+      "path": "runtime/config/device_state_data_v8_cross_fn-01.json",
+      "sha256": "__CROSS_FN_01_V8_SHA256__"
+    },
+    {
+      "config_id": "mcp-controller-config-v1",
+      "path": "mcp_controller_server/config/controller_config.json",
+      "sha256": "fee13f424a333641fa0c7d4c0b20fc8f56456c34426c68bdb1ca3951a557196a"
+    }
+  ],
+  "rollout": {
+    "worker_canary_count": 1,
+    "worker_batch_size": 2,
+    "lock_ttl_s": 21600
+  }
+}

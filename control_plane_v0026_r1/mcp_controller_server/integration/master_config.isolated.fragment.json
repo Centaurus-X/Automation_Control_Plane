@@ -1,0 +1,8 @@
+{
+  "control": {
+    "allowed_proxy_instance_ids": [
+      "proxy-01",
+      "mcp-controller-01"
+    ]
+  }
+}

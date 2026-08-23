@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mode", "external"],
+  "properties": {
+    "global": {"type": "object", "additionalProperties": true},
+    "enabled": {"type": "boolean"},
+    "mode": {"const": "external"},
+    "external": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "port", "database"],
+      "properties": {
+        "host": {"type": "string", "minLength": 1, "maxLength": 253},
+        "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "database": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,62}$"}
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+        "annotations": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    }
+  }
+}

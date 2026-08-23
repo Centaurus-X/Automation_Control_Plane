@@ -1,0 +1,6 @@
+apiVersion: v2
+name: automation-system-soft
+description: Separate automation_system archive deployed only as a soft-RT or simulation Worker
+type: application
+version: 0.27.3
+appVersion: "0.101.0"

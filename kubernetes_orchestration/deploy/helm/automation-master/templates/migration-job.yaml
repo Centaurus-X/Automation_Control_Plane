@@ -1,0 +1,63 @@
+{{- if .Values.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-migrate-{{ .Release.Revision }}
+  labels:
+    app.kubernetes.io/name: automation-master
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: migration
+    app.kubernetes.io/part-of: automation-platform
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: automation-master
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: migration
+        app.kubernetes.io/part-of: automation-platform
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: migration
+          image: "{{ required "image.repository is required" .Values.image.repository }}@{{ required "image.digest is required" .Values.image.digest }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["python", "-m", "migration_main"]
+          env:
+            - {name: MASTER_MIGRATOR_DB_HOST, value: {{ .Values.database.host | quote }}}
+            - {name: MASTER_MIGRATOR_DB_PORT, value: {{ .Values.database.port | quote }}}
+            - {name: MASTER_MIGRATOR_DB_NAME, value: {{ .Values.database.name | quote }}}
+            - {name: MASTER_MIGRATOR_DB_USER, value: {{ .Values.database.migratorUser | quote }}}
+            - {name: MASTER_MIGRATOR_DB_PASSWORD_FILE, value: /run/secrets/master_migrator_password}
+            - {name: MASTER_MIGRATOR_DB_SSLMODE, value: verify-full}
+            - {name: MASTER_MIGRATOR_DB_SSLROOTCERT, value: /run/secrets/postgres_ca}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: database, mountPath: /run/secrets/master_migrator_password, subPath: migrator-password, readOnly: true}
+            - {name: database, mountPath: /run/secrets/postgres_ca, subPath: ca.crt, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: database
+          secret:
+            secretName: {{ required "secretRefs.database is required" .Values.secretRefs.database }}
+            defaultMode: 0440
+        - name: tmp
+          emptyDir: {medium: Memory, sizeLimit: 128Mi}
+
+{{- end }}

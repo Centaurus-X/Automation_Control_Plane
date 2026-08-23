@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "master",
+  "providers": ["docker_compose", "kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": ["postgresql", "mqtt"], "hard_runtime": ["postgresql", "mqtt"], "soft_runtime": [], "management": [], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["network-policy", "persistent-storage"]},
+  "health_contract": {"live": "/health/live", "ready": "/health/ready", "metrics": "/metrics", "port": 9090},
+  "rollback_contract": {"application_reversible": true, "database_reversible": false},
+  "security_contract": {"read_only_root_filesystem": true, "capabilities_drop_all": true, "replicas_max": 1}
+}

@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "deployment_id": "site-main-control-plane",
+  "release_ref": "automation-control-plane-v0027-r3",
+  "placement": {
+    "target_ids": ["cluster-lab-01"]
+  },
+  "components": {
+    "postgresql": {
+      "enabled": true,
+      "values": {
+        "mode": "external",
+        "external": {
+          "host": "postgresql.example.invalid",
+          "port": 5432,
+          "database": "automation_platform"
+        }
+      }
+    },
+    "mqtt": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/mosquitto",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "secretRefs": {
+          "tls": "automation-mqtt-tls"
+        }
+      }
+    },
+    "master": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/master",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "secretRefs": {
+          "database": "automation-master-database",
+          "mqtt": "automation-master-mqtt",
+          "initialConfig": "automation-master-initial-config"
+        }
+      }
+    },
+    "proxy": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/proxy",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "secretRefs": {
+          "database": "automation-proxy-database",
+          "mqtt": "automation-proxy-mqtt",
+          "https": "automation-proxy-https",
+          "wss": "automation-proxy-wss",
+          "security": "automation-proxy-security"
+        }
+      }
+    },
+    "mcp-controller": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/mcp-controller",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "secretRefs": {
+          "mqtt": "automation-mcp-mqtt",
+          "auth": "automation-mcp-auth"
+        }
+      }
+    },
+    "automation-system": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/system",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "runtimeArchiveDigest": "sha256:c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467",
+        "runtimeProfile": "container_simulation",
+        "mqtt": {"enabled": true},
+        "secretRefs": {
+          "mqtt": "automation-worker-mqtt"
+        }
+      }
+    },
+    "automation-fleet": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/fleet",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "secretRefs": {
+          "auth": "automation-fleet-auth"
+        }
+      }
+    },
+    "cluster-agent": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/fleet",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "centralUrl": "https://fleet.example.invalid",
+        "targetId": "cluster-lab-01",
+        "clusterId": "cluster-lab-01",
+        "secretRefs": {"agentToken": "automation-cluster-agent-token"}
+      }
+    },
+    "observability": {
+      "enabled": false,
+      "values": {
+        "image": {
+          "repository": "registry.example.invalid/automation/otel-collector",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      }
+    }
+  },
+  "rollout": {
+    "strategy": "waves",
+    "max_parallel": 1,
+    "stop_on_failure": true,
+    "approval_per_wave": true,
+    "canary_per_failure_domain": true
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "protocol": "automation.proxy.websocket.v1",
+  "actions": [
+    {"action": "users.list", "mutation": false, "execution": "live_read", "payload": {"limit": 100}},
+    {"action": "user.create", "mutation": true, "execution": "safe_negative", "payload": {"username": "e2e-disabled", "password": "fixture-not-a-live-secret"}},
+    {"action": "roles.list", "mutation": false, "execution": "live_read", "payload": {}},
+    {"action": "permissions.list", "mutation": false, "execution": "live_read", "payload": {}},
+    {"action": "api_tokens.list", "mutation": false, "execution": "live_read", "payload": {"limit": 100}},
+    {"action": "api_tokens.create", "mutation": true, "execution": "dynamic_reversible", "payload": {"name": "e2e-v0025", "permissions": [], "site_scopes": []}},
+    {"action": "api_tokens.revoke", "mutation": true, "execution": "dynamic_reversible", "payload": {"token_id": "00000000-0000-0000-0000-000000000001"}},
+    {"action": "sites.list", "mutation": false, "execution": "live_read", "payload": {}},
+    {"action": "nodes.list", "mutation": false, "execution": "live_read", "payload": {}},
+    {"action": "node.get", "mutation": false, "execution": "live_read", "payload": {"node_id": "fn-01"}},
+    {"action": "runtime.status", "mutation": false, "execution": "live_read", "payload": {}},
+    {"action": "config.get", "mutation": false, "execution": "live_read", "payload": {"scope": "node:fn-01"}},
+    {"action": "config.history", "mutation": false, "execution": "live_read", "payload": {"limit": 20}},
+    {"action": "config.diff", "mutation": false, "execution": "dynamic_negative", "payload": {"from_revision": 1, "to_revision": 2}},
+    {"action": "config.propose", "mutation": true, "execution": "dynamic_reversible", "payload": {"target_node_id": "fn-01", "operation": "scope_operations", "operation_format": "config_scope_operations_v1", "scope": "node:fn-01", "base_authority_epoch": 1, "base_scope_revision": 1, "base_scope_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "reason": "WSS v0025 Node-Local E2E", "operations": [{"op": "replace_field", "section": "rules", "entity_key": "rule:1", "json_pointer": "/enabled", "expected_value_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "value": true}]}},
+    {"action": "config.rollback", "mutation": true, "execution": "dynamic_negative", "payload": {"base_revision": 2, "target_revision": 1, "reason": "Legacy rollback rejection probe"}},
+    {"action": "actuator.request", "mutation": true, "execution": "dynamic_reversible", "payload": {"controller_uuid": "62671112-766c-59ed-b0ff-30a49d48f747", "actuator_id": 1, "value": true}},
+    {"action": "operation.get", "mutation": false, "execution": "dynamic_read", "payload": {"operation_id": "00000000-0000-0000-0000-000000000001"}},
+    {"action": "audit.list", "mutation": false, "execution": "live_read", "payload": {"limit": 100}},
+    {"action": "node.drain", "mutation": true, "execution": "safe_negative", "payload": {"node_id": "fn-01", "reason": "E2E fixture only", "deadline_s": 30}},
+    {"action": "node.state.set", "mutation": true, "execution": "safe_negative", "payload": {"node_id": "fn-01", "desired_state": "ACTIVE", "reason": "E2E fixture only"}},
+    {"action": "node.admission.approve", "mutation": true, "execution": "safe_negative", "payload": {"node_id": "fn-02", "reason": "E2E fixture only"}},
+    {"action": "terminal.execute", "mutation": true, "execution": "safe_negative", "payload": {"command": "status"}}
+  ]
+}

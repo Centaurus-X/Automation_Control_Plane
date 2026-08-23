@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "release": "automation_control_plane_release_v0027_r3",
+  "release_version": "0.27.3",
+  "release_revision": "v0027-r3",
+  "result": "PASS_WITH_EXTERNAL_GATES_OPEN",
+  "release_integrity": {
+    "archive_files": 872,
+    "manifest_entries": 871,
+    "file_audit_entries": 870,
+    "preserved_control_plane_files": 588,
+    "preserved_control_plane_manifest_entries": 587,
+    "preserved_control_plane_byte_identity": "PASS",
+    "runtime_embedded": false,
+    "deterministic_double_build_required": true,
+    "final_archive_digest_location": "automation_control_plane_release_v0027_r3.sha256"
+  },
+  "bound_inputs": {
+    "parent_release_sha256": "81dae99f922990a793ed4d77cf56659b9aa50b7d09cedcad4031bbdd61f769e6",
+    "control_plane_archive_sha256": "ccddf6ed4c959bf17cad4041c68b683eccc0110702c6ae46987b220d07d2fb03",
+    "control_plane_manifest_sha256": "451759c6e8b1f73636e65626c06ff79dc70a1fd9b3b0e9828d7f0902c5c01240",
+    "runtime_archive_sha256": "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467",
+    "runtime_manifest_sha256": "699c29f9cf58b1bd6bd7407e879b3b5b3f41ad978343037a1dc33a75ec25026d",
+    "architecture_plan_sha256": "865c061bd73b2fddc756a91dee6c5b96058e8559f733bd0b9be10e8fdfac3509"
+  },
+  "executed_gates": {
+    "release_verifier": "PASS",
+    "functional_python_modules": 35,
+    "python_test_files": 9,
+    "python_tests": "PASS",
+    "lifecycle_test": "PASS",
+    "javascript_syntax": "PASS",
+    "static_yaml_documents": 39,
+    "static_yaml_parse": "PASS",
+    "json_parse": "PASS",
+    "shell_syntax_and_mode": "PASS",
+    "helm_chart_count_including_umbrella": 10,
+    "helm_static_security_and_boundary_checks": "PASS",
+    "runtime_archive_validation": "PASS",
+    "runtime_executable_tests": 54,
+    "runtime_tests": "PASS"
+  },
+  "covered_orchestration_paths": [
+    "deterministic_placement_and_exclusion_reasons",
+    "nine_step_saga_and_digest_binding",
+    "direct_kubernetes_helm",
+    "gitops_argocd_and_gitops_flux",
+    "outbound_cluster_agent_and_dual_lease_fencing",
+    "four_eyes_and_per_wave_approval",
+    "pause_resume_and_idempotency",
+    "provider_rollback_and_manual_recovery_boundary",
+    "role_csrf_session_and_target_scoped_tokens",
+    "audit_hash_chain_and_evidence_export",
+    "web_ui_api_metrics_alerts_and_dashboard"
+  ],
+  "external_gates_not_executed": {
+    "helm_lint_and_template": "SKIP: Helm binary not installed in build environment",
+    "kubectl_live_api": "SKIP: no Kubernetes target cluster available",
+    "docker_oci_build_and_registry": "SKIP: no Docker daemon or OCI registry available",
+    "cni_storage_pki_postgresql_gitops_e2e": "SKIP: no production integration environment available",
+    "preserved_control_plane_docker_tests": "SKIP: Docker-dependent and baseline is byte-identical"
+  },
+  "production_release_condition": "Execute every normative target gate in KUBERNETES_TARGET_ACCEPTANCE_DE.md in the intended environment."
+}

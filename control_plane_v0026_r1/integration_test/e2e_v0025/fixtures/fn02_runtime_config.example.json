@@ -1,0 +1,14 @@
+{
+  "broker_host": "192.168.0.82",
+  "broker_port": 8883,
+  "server_hostname": "192.168.0.82",
+  "ca_file": "../../../mqtt_broker/test-pki/ca/ca.crt",
+  "cert_file": "../../../mqtt_broker/test-pki/clients/worker-fn-02/mqtt.crt",
+  "key_file": "../../../mqtt_broker/test-pki/clients/worker-fn-02/mqtt.key",
+  "client_id": "automation-e2e-site-main-fn-02",
+  "site_id": "site-main",
+  "node_id": "fn-02",
+  "master_node_id": "master-01",
+  "heartbeat_interval_s": 10,
+  "max_packet_size": 1048576
+}

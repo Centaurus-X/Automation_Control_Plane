@@ -1,0 +1,53 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app.kubernetes.io/name: automation-observability
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: automation-platform
+data:
+  collector.yaml: |
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: automation-master
+              static_configs:
+                - targets: [{{ .Values.scrape.master | quote }}]
+            - job_name: automation-fleet
+              metrics_path: /metrics
+              static_configs:
+                - targets: [{{ .Values.scrape.fleet | quote }}]
+    processors:
+      memory_limiter:
+        check_interval: 5s
+        limit_mib: 384
+      batch:
+        timeout: 5s
+        send_batch_size: 512
+    exporters:
+      prometheus:
+        endpoint: 0.0.0.0:8889
+      {{- if .Values.remoteWrite.enabled }}
+      prometheusremotewrite:
+        endpoint: {{ .Values.remoteWrite.endpoint | quote }}
+        headers:
+          Authorization: ${env:REMOTE_WRITE_AUTHORIZATION}
+      {{- end }}
+    service:
+      telemetry:
+        logs:
+          level: info
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [memory_limiter, batch]
+          exporters:
+            - prometheus
+            {{- if .Values.remoteWrite.enabled }}
+            - prometheusremotewrite
+            {{- end }}
+
+{{- end }}

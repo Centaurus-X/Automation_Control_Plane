@@ -1,0 +1,7 @@
+apiVersion: v2
+name: automation-cluster-agent
+description: Outbound-only namespace-scoped Automation Fleet cluster agent
+type: application
+version: 0.27.3
+appVersion: "0.27.3"
+kubeVersion: ">=1.27.0-0"

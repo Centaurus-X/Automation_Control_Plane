@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1650" height="1120" viewBox="0 0 1650 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Proxy Gateway v0015 – interne Architektur</title>
+  <desc id="desc">Ein Proxy-Prozess mit direktem websockets-Listener, HTTP-only Uvicorn, gemeinsamem Dispatcher, Authentifizierung, Event Stream, MQTTS und PostgreSQL.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#334155"/></marker>
+    <style>
+      .title{font:700 34px Inter,Arial,sans-serif;fill:#0f172a}.subtitle{font:400 17px Inter,Arial,sans-serif;fill:#475569}.section{font:700 18px Inter,Arial,sans-serif;fill:#0f172a}
+      .bt{font:700 19px Inter,Arial,sans-serif;fill:#0f172a}.body{font:400 14px Inter,Arial,sans-serif;fill:#334155}.small{font:500 13px Inter,Arial,sans-serif;fill:#475569}.label{font:600 13px Inter,Arial,sans-serif;fill:#334155}
+      .edge{fill:none;stroke:#334155;stroke-width:2.7;marker-end:url(#arrow)}.both{fill:none;stroke:#334155;stroke-width:2.7;marker-start:url(#arrow);marker-end:url(#arrow)}.dash{fill:none;stroke:#64748b;stroke-width:2.5;stroke-dasharray:8 6;marker-end:url(#arrow)}
+      .outer{fill:#f8fafc;stroke:#334155;stroke-width:3}.wssarea{fill:#ecfeff;stroke:#0891b2;stroke-width:2}.httparea{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.security{fill:#fef2f2;stroke:#dc2626;stroke-width:2}.service{fill:#ecfdf5;stroke:#15803d;stroke-width:2}.store{fill:#faf5ff;stroke:#7e22ce;stroke-width:2}.note{fill:#fff7ed;stroke:#ea580c;stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1650" height="1120" fill="#fff"/>
+  <text x="50" y="58" class="title">Proxy Gateway v0015 – Zielarchitektur</text>
+  <text x="50" y="90" class="subtitle">Ein Prozess, ein gemeinsamer Runtime-Kontext, zwei getrennte TLS-Listener und keine duplizierte Businesslogik.</text>
+
+  <rect x="55" y="150" width="220" height="150" rx="18" class="httparea"/>
+  <text x="165" y="190" text-anchor="middle" class="bt">Client</text>
+  <text x="165" y="225" text-anchor="middle" class="body"><tspan x="165">Browser / CLI / HMI</tspan><tspan x="165" dy="23">WSS primär</tspan><tspan x="165" dy="23">HTTPS sekundär</tspan></text>
+
+  <rect x="330" y="125" width="970" height="900" rx="26" class="outer"/>
+  <text x="815" y="164" text-anchor="middle" class="section">Proxy-Prozess · ein asyncio Event Loop · genau eine MQTTS-Identität</text>
+
+  <rect x="375" y="200" width="550" height="260" rx="20" class="wssarea"/>
+  <text x="650" y="235" text-anchor="middle" class="section">Direkter websockets-Listener · 0.0.0.0:8443</text>
+  <rect x="405" y="270" width="230" height="145" rx="15" class="wssarea"/>
+  <text x="520" y="305" text-anchor="middle" class="bt">/ws/v1/events</text>
+  <text x="520" y="338" text-anchor="middle" class="body"><tspan x="520">logische Filter</tspan><tspan x="520" dy="22">Replay Cursor</tspan><tspan x="520" dy="22">ein Reader / Writer</tspan></text>
+  <rect x="665" y="270" width="230" height="145" rx="15" class="wssarea"/>
+  <text x="780" y="305" text-anchor="middle" class="bt">/ws/v1/control</text>
+  <text x="780" y="338" text-anchor="middle" class="body"><tspan x="780">command.request</tspan><tspan x="780" dy="22">Korrelation</tspan><tspan x="780" dy="22">bounded dispatch</tspan></text>
+
+  <rect x="965" y="200" width="290" height="260" rx="20" class="httparea"/>
+  <text x="1110" y="238" text-anchor="middle" class="section">Sekundärlistener :8444</text>
+  <rect x="995" y="270" width="230" height="145" rx="15" class="httparea"/>
+  <text x="1110" y="305" text-anchor="middle" class="bt">Starlette + Uvicorn</text>
+  <text x="1110" y="338" text-anchor="middle" class="body"><tspan x="1110">nur HTTPS Routes</tspan><tspan x="1110" dy="22">Uvicorn ws = none</tspan><tspan x="1110" dy="22">keine WebSocketRoute</tspan></text>
+
+  <rect x="375" y="510" width="250" height="150" rx="16" class="security"/>
+  <text x="500" y="547" text-anchor="middle" class="bt">Identity &amp; Policy</text>
+  <text x="500" y="580" text-anchor="middle" class="body"><tspan x="500">Session / API Token</tspan><tspan x="500" dy="22">Origin / CSRF / RBAC</tspan><tspan x="500" dy="22">Site / Resource Scope</tspan></text>
+
+  <rect x="665" y="500" width="300" height="170" rx="16" class="service"/>
+  <text x="815" y="538" text-anchor="middle" class="bt">Command Dispatcher</text>
+  <text x="815" y="570" text-anchor="middle" class="body"><tspan x="815">transportneutrale Action Registry</tspan><tspan x="815" dy="22">Schema · Rate Limit · Audit</tspan><tspan x="815" dy="22">Idempotenz · Timeout</tspan><tspan x="815" dy="22">keine freien MQTT-Topics</tspan></text>
+
+  <rect x="1005" y="510" width="250" height="150" rx="16" class="service"/>
+  <text x="1130" y="547" text-anchor="middle" class="bt">Command Gateway</text>
+  <text x="1130" y="580" text-anchor="middle" class="body"><tspan x="1130">bestehende v0014-Funktionen</tspan><tspan x="1130" dy="22">RBAC + feste Master-Actions</tspan><tspan x="1130" dy="22">REST/WSS-Parität</tspan></text>
+
+  <rect x="375" y="720" width="270" height="165" rx="16" class="service"/>
+  <text x="510" y="758" text-anchor="middle" class="bt">Logical Event Stream</text>
+  <text x="510" y="790" text-anchor="middle" class="body"><tspan x="510">bounded Client Queues</tspan><tspan x="510" dy="22">Telemetry Coalescing</tspan><tspan x="510" dy="22">kritischer Overflow → 1013</tspan><tspan x="510" dy="22">durable Replay</tspan></text>
+
+  <rect x="690" y="720" width="250" height="165" rx="16" class="service"/>
+  <text x="815" y="758" text-anchor="middle" class="bt">MQTTS Gateway</text>
+  <text x="815" y="790" text-anchor="middle" class="body"><tspan x="815">proxy-01 mTLS</tspan><tspan x="815" dy="22">QoS 1 · Retry · ACK</tspan><tspan x="815" dy="22">Envelope-Prüfung</tspan><tspan x="815" dy="22">eine Broker-Session</tspan></text>
+
+  <rect x="985" y="720" width="270" height="165" rx="16" class="store"/>
+  <text x="1120" y="758" text-anchor="middle" class="bt">PostgreSQL Stores</text>
+  <text x="1120" y="790" text-anchor="middle" class="body"><tspan x="1120">Sessions · Tokens · Rate Limit</tspan><tspan x="1120" dy="22">Audit · Command State</tspan><tspan x="1120" dy="22">Idempotenz · Event Replay</tspan><tspan x="1120" dy="22">gemeinsame Wahrheit</tspan></text>
+
+  <rect x="375" y="930" width="880" height="65" rx="14" class="note"/>
+  <text x="815" y="958" text-anchor="middle" class="bt">Lifecycle</text>
+  <text x="815" y="982" text-anchor="middle" class="small">Readiness false → Handshakes stoppen → Dispatch drain → Clients 1001 → HTTP stop → MQTT stop → PostgreSQL close</text>
+
+  <rect x="1390" y="410" width="210" height="160" rx="20" class="store"/>
+  <text x="1495" y="450" text-anchor="middle" class="bt">Mosquitto</text>
+  <text x="1495" y="485" text-anchor="middle" class="body"><tspan x="1495">MQTTS · mTLS</tspan><tspan x="1495" dy="23">Master / Worker Topics</tspan><tspan x="1495" dy="23">ACL-bound Identity</tspan></text>
+  <rect x="1390" y="675" width="210" height="155" rx="20" class="store"/>
+  <text x="1495" y="715" text-anchor="middle" class="bt">PostgreSQL</text>
+  <text x="1495" y="750" text-anchor="middle" class="body"><tspan x="1495">TLS SQL</tspan><tspan x="1495" dy="23">durable State</tspan><tspan x="1495" dy="23">Replay / Audit</tspan></text>
+
+  <path d="M275 190C320 190 340 320 405 320" class="both"/><text x="292" y="242" class="label">Subscribe / Events</text>
+  <path d="M275 235C410 235 525 330 665 330" class="both"/><text x="450" y="278" class="label">WSS Control / Result</text>
+  <path d="M275 280C400 480 800 480 995 350" class="dash"/><text x="625" y="475" class="label">HTTPS optional</text>
+  <path d="M375 800C335 700 335 430 405 360" class="edge"/><text x="342" y="690" class="small">events</text>
+  <path d="M780 415V500" class="edge"/><path d="M1110 415C1110 475 950 500 900 530" class="edge"/>
+  <path d="M625 575H665" class="both"/><path d="M965 585H1005" class="edge"/>
+  <path d="M1130 660C1080 700 940 740 940 775" class="edge"/>
+  <path d="M690 805H645" class="edge"/>
+  <path d="M625 640L655 690H960L1000 740" class="both"/>
+  <path d="M965 585C1080 600 1120 660 1120 720" class="both"/>
+  <path d="M645 865L680 905H955L985 865" class="both"/>
+  <path d="M1255 585C1320 560 1350 500 1390 490" class="both"/><text x="1325" y="525" class="label">MQTTS</text>
+  <path d="M1255 790H1390" class="both"/><text x="1322" y="776" text-anchor="middle" class="label">TLS SQL</text>
+
+  <rect x="55" y="365" width="220" height="365" rx="18" class="note"/>
+  <text x="165" y="405" text-anchor="middle" class="bt">Sicherheitsinvarianten</text>
+  <text x="78" y="445" class="body"><tspan x="78">• exakt zwei WSS-Pfade</tspan><tspan x="78" dy="27">• keine Query-Tokens</tspan><tspan x="78" dy="27">• exakte Origin-Allowlist</tspan><tspan x="78" dy="27">• TLS ≥ 1.2</tspan><tspan x="78" dy="27">• bounded Queues</tspan><tspan x="78" dy="27">• ein Reader / Writer</tspan><tspan x="78" dy="27">• Idempotency für Writes</tspan><tspan x="78" dy="27">• terminale Events replaybar</tspan><tspan x="78" dy="27">• keine Payload-Secrets im Log</tspan></text>
+</svg>

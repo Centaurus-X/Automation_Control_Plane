@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "postgresql",
+  "providers": ["docker_compose", "kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": [], "management": [], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["network-policy"]},
+  "health_contract": {"mode": "external-service", "port": 5432},
+  "rollback_contract": {"application_reversible": false, "database_reversible": false},
+  "security_contract": {"credentials": "existing-secret-reference", "tls_required": true}
+}

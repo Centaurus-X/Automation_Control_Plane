@@ -1,0 +1,5 @@
+secrets/
+test-pki/
+backup/
+runtime-config/
+*.log

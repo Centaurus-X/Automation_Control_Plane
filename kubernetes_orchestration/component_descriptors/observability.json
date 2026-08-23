@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "observability",
+  "providers": ["kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": ["master", "mqtt", "proxy"], "management": [], "observability": []},
+  "placement_contract": {"required_capabilities": ["network-policy"]},
+  "health_contract": {"mode": "prometheus-and-opentelemetry"},
+  "rollback_contract": {"application_reversible": true, "telemetry_reversible": false},
+  "security_contract": {"rt_hotpath_blocking": false, "secret_redaction": true}
+}

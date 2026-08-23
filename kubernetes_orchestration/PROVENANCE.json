@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "subject": {
+    "name": "automation_control_plane_release_v0027_r3",
+    "version": "0.27.3",
+    "revision": "v0027-r3"
+  },
+  "materials": [
+    {
+      "name": "automation_control_plane_release_v0027_r2(1).zip",
+      "sha256": "81dae99f922990a793ed4d77cf56659b9aa50b7d09cedcad4031bbdd61f769e6",
+      "usage": "verified additive parent release"
+    },
+    {
+      "name": "automation_control_plane_release_v0026_r1(2).zip",
+      "sha256": "ccddf6ed4c959bf17cad4041c68b683eccc0110702c6ae46987b220d07d2fb03",
+      "usage": "byte-identical preserved control-plane baseline"
+    },
+    {
+      "name": "automation_system_v0101(8).zip",
+      "sha256": "c1e62ead807817930cd8323852e0ba421d6d70baa336b37f89d86692f1939467",
+      "usage": "external runtime input; not embedded"
+    },
+    {
+      "name": "automation_fleet_plane_kubernetes_multicluster_rt_architecture_plan(4).md",
+      "sha256": "865c061bd73b2fddc756a91dee6c5b96058e8559f733bd0b9be10e8fdfac3509",
+      "usage": "architecture requirements"
+    }
+  ],
+  "build": {
+    "deterministic_zip_timestamps": true,
+    "full_sha256_manifest": true,
+    "file_audit": "documentation/FILE_AUDIT_V0027_R3.json",
+    "runtime_embedded": false
+  }
+}

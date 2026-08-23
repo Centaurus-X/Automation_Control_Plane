@@ -1,0 +1,147 @@
+name: automation-proxy
+
+x-proxy-environment: &proxy-environment
+  AUTOMATION_SITE_ID: ${AUTOMATION_SITE_ID:-site-main}
+  PROXY_INSTANCE_ID: ${PROXY_INSTANCE_ID:-proxy-01}
+  MASTER_INSTANCE_ID: ${MASTER_INSTANCE_ID:-master-01}
+  PROXY_CONFIG_AUTHORITY: ${PROXY_CONFIG_AUTHORITY:-node_local}
+  MQTT_HOST: ${MQTT_HOST:-mqtt-broker}
+  MQTT_PORT: ${MQTT_PORT:-8883}
+  MQTT_REQUIRED: ${MQTT_REQUIRED:-true}
+  MQTT_TLS_ENABLED: ${MQTT_TLS_ENABLED:-true}
+  MQTT_ALLOW_INSECURE_TRANSPORT: ${MQTT_ALLOW_INSECURE_TRANSPORT:-false}
+  PROXY_DB_HOST: automation-postgres
+  PROXY_DB_PORT: "5432"
+  PROXY_DB_NAME: automation_platform
+  PROXY_DB_USER: proxy_app
+  PROXY_DB_PASSWORD_FILE: /run/secrets/proxy_db_password
+  PROXY_DB_SSLMODE: verify-full
+  PROXY_DB_SSLROOTCERT: /run/secrets/postgres_ca
+  PROXY_TLS_ENABLED: ${PROXY_TLS_ENABLED:-true}
+  PROXY_TLS_CERT_FILE: /run/secrets/proxy_https_cert
+  PROXY_TLS_KEY_FILE: /run/secrets/proxy_https_key
+  PROXY_WSS_HOST: 0.0.0.0
+  PROXY_WSS_PORT: "8443"
+  PROXY_WSS_CERT_FILE: /run/secrets/proxy_wss_cert
+  PROXY_WSS_KEY_FILE: /run/secrets/proxy_wss_key
+  PROXY_HTTPS_HOST: 0.0.0.0
+  PROXY_HTTPS_PORT: "8444"
+  PROXY_ORIGIN_ALLOWLIST: "${PROXY_ORIGIN_ALLOWLIST:-https://192.168.0.82:8444}"
+  CONTROL_PLANE_TEST_MODE: "${CONTROL_PLANE_TEST_MODE:-0}"
+
+services:
+  proxy-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${PROXY_IMAGE:-automation-proxy-gateway:0.26.0}
+    command: ["python", "-m", "migration_main"]
+    restart: "no"
+    environment:
+      PROXY_MIGRATOR_DB_HOST: automation-postgres
+      PROXY_MIGRATOR_DB_PORT: "5432"
+      PROXY_MIGRATOR_DB_NAME: automation_platform
+      PROXY_MIGRATOR_DB_USER: proxy_migrator
+      PROXY_MIGRATOR_DB_PASSWORD_FILE: /run/secrets/proxy_migrator_password
+      PROXY_MIGRATOR_DB_SSLMODE: verify-full
+      PROXY_MIGRATOR_DB_SSLROOTCERT: /run/secrets/postgres_ca
+    secrets:
+      - proxy_migrator_password
+      - postgres_ca
+    volumes:
+      - proxy_runtime:/app/proxy_gateway/_runtime
+    networks:
+      - database_private
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  proxy-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${PROXY_IMAGE:-automation-proxy-gateway:0.26.0}
+    restart: unless-stopped
+    stop_grace_period: 75s
+    environment: *proxy-environment
+    ports:
+      - "${PROXY_BIND_ADDRESS:-192.168.0.82}:${PROXY_WSS_PORT:-8443}:8443"
+      - "${PROXY_BIND_ADDRESS:-192.168.0.82}:${PROXY_HTTPS_PORT:-8444}:8444"
+    secrets:
+      - proxy_db_password
+      - postgres_ca
+      - password_pepper
+      - token_pepper
+      - binding_pepper
+      - mqtt_ca
+      - proxy_mqtt_cert
+      - proxy_mqtt_key
+      - proxy_https_cert
+      - proxy_https_key
+      - proxy_wss_cert
+      - proxy_wss_key
+    volumes:
+      - proxy_runtime:/app/proxy_gateway/_runtime
+    networks:
+      - database_private
+      - control_egress
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=256m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import ssl,urllib.request; c=ssl._create_unverified_context(); urllib.request.urlopen('https://127.0.0.1:8444/api/v1/health/ready', context=c, timeout=2).read()"
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 20s
+
+volumes:
+  proxy_runtime:
+
+networks:
+  database_private:
+    external: true
+    name: automation_database
+  control_egress:
+    external: true
+    name: automation_control
+
+secrets:
+  proxy_db_password:
+    file: ./secrets/proxy_db_password
+  proxy_migrator_password:
+    file: ./secrets/proxy_migrator_password
+  postgres_ca:
+    file: ./secrets/postgres_ca.crt
+  password_pepper:
+    file: ./secrets/password_pepper
+  token_pepper:
+    file: ./secrets/token_pepper
+  binding_pepper:
+    file: ./secrets/binding_pepper
+  mqtt_ca:
+    file: ./secrets/mqtt_ca.crt
+  proxy_mqtt_cert:
+    file: ./secrets/proxy_mqtt.crt
+  proxy_mqtt_key:
+    file: ./secrets/proxy_mqtt.key
+  proxy_https_cert:
+    file: ./secrets/proxy_https.crt
+  proxy_https_key:
+    file: ./secrets/proxy_https.key
+  proxy_wss_cert:
+    file: ./secrets/proxy_https.crt
+  proxy_wss_key:
+    file: ./secrets/proxy_https.key

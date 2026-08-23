@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:automation:fleet:plan:v1",
+  "title": "Immutable Automation Fleet Plan v1",
+  "type": "object",
+  "required": ["schema_version", "plan_id", "release_id", "deployment_id", "environment_id", "inventory_digest", "catalog_digest", "desired_digest", "policy_digest", "component_descriptor_digests", "provider", "provider_contract_version", "component_order", "target_order", "approval_required", "steps"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "plan_id": {"$ref": "#/$defs/digest"},
+    "release_id": {"type": "string"},
+    "deployment_id": {"type": "string"},
+    "environment_id": {"type": "string"},
+    "inventory_digest": {"$ref": "#/$defs/digest"},
+    "catalog_digest": {"$ref": "#/$defs/digest"},
+    "desired_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "component_descriptor_digests": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/digest"}},
+    "provider": {"const": "kubernetes_helm"},
+    "provider_contract_version": {"const": 1},
+    "component_order": {"type": "array", "items": {"type": "string"}},
+    "target_order": {"type": "array", "items": {"type": "string"}},
+    "rollout": {"type": "object"},
+    "approval_required": {"type": "boolean"},
+    "steps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/step"}}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "step": {
+      "type": "object",
+      "required": ["step_id", "order", "wave", "target_id", "site_id", "cluster_id", "context", "namespace", "write_owner", "target_generation", "component_id", "provider", "provider_contract_version", "release_name", "chart", "chart_digest", "descriptor_digest", "values", "effective_values_digest", "operation", "idempotency_key", "timeout_s"],
+      "properties": {
+        "step_id": {"type": "string"},
+        "order": {"type": "integer", "minimum": 1},
+        "wave": {"type": "integer", "minimum": 0},
+        "target_id": {"type": "string"},
+        "site_id": {"type": "string"},
+        "cluster_id": {"type": "string"},
+        "context": {"type": "string"},
+        "namespace": {"type": "string"},
+        "write_owner": {"enum": ["helm", "observe_only"]},
+        "target_generation": {"$ref": "#/$defs/digest"},
+        "component_id": {"type": "string"},
+        "provider": {"const": "kubernetes_helm"},
+        "provider_contract_version": {"const": 1},
+        "release_name": {"type": "string"},
+        "chart": {"type": "string"},
+        "chart_digest": {"$ref": "#/$defs/digest"},
+        "descriptor_digest": {"$ref": "#/$defs/digest"},
+        "values": {"type": "object"},
+        "effective_values_digest": {"$ref": "#/$defs/digest"},
+        "operation": {"enum": ["preflight", "render", "apply", "wait_ready", "verify"]},
+        "idempotency_key": {"$ref": "#/$defs/digest"},
+        "timeout_s": {"type": "integer", "minimum": 1, "maximum": 3600}
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+enabled: true
+replicaCount: 1
+image:
+  repository: registry.example.invalid/automation/master
+  digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+siteId: site-main
+masterInstanceId: master-01
+releaseProfile: lab_v2
+database:
+  host: automation-postgres
+  port: 5432
+  name: automation_platform
+  appUser: master_app
+  migratorUser: master_migrator
+mqtt:
+  host: automation-mqtt
+  port: 8883
+  required: true
+secretRefs:
+  database: automation-master-database
+  mqtt: automation-master-mqtt
+  initialConfig: automation-master-initial-config
+persistence:
+  size: 4Gi
+  storageClassName: ""
+resources:
+  requests: {cpu: 250m, memory: 256Mi}
+  limits: {cpu: 2, memory: 1Gi}
+networkPolicy:
+  enabled: true
+podAnnotations: {}

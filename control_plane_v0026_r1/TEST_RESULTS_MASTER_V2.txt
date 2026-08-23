@@ -1,0 +1,39 @@
+MASTER V2 0.26.0 / v0026-r1
+QUALIFIKATIONSSTAND: 2026-08-15
+
+PASS  40/40 ausführbare Master-Testdateien.
+PASS  Der Worker ist im Standardmodus die einzige finale Authority seines
+      Node-Shards; der Master vergibt keine Node-Revision.
+PASS  Der Master implementiert ausschließlich Registry, Relay, Mirror und
+      Audit und enthält keine Rule-, FSM-, Automation- oder Hardware-Engine.
+PASS  Öffentliche Proposals bleiben unveränderte entity-keyed
+      config_scope_operations_v1 bis zum owning Worker.
+PASS  Mirror und Registry vergleichen das vollständige monotone Tupel
+      (authority_epoch, scope_revision, execution_epoch, fingerprint).
+PASS  PostgreSQL sperrt beim initialen Mirror-Upsert nur den nicht-nullbaren
+      Authority-Head mit FOR UPDATE OF h; der LEFT-JOIN-Pfad ist regressiv
+      gegen den zuvor ausgelösten SQL-Fehler abgesichert.
+PASS  Runtime-Readiness ist authority-mode-sensitiv und behauptet im
+      node_local-Modus keine Master-Config-Authority.
+PASS  Der Runtime-Snapshot wird vor JSON-Ausgabe tatsächlich aufgerufen;
+      Stabilitäts- und JSON-Regression sichern den früheren Fehlerpfad ab.
+PASS  Bootstrap-Auto-Admission ist über die explizite Allowlist fn-01
+      fail-closed begrenzt.
+PASS  Die routing-only Node-local-Topologie bindet Registry-Leases an die
+      operative Site-ID site-main, ohne V5-Business-Inhalte zu verändern.
+PASS  Migration 004 erlaubt config_revision=0 ausschließlich als gültigen
+      Node-local-Registry-Fence; V5 bleibt ein gefenceter, einmaliger Import.
+PASS  Node-Speicherung bleibt V9, Cross-Speicherung V8; die deterministische
+      V9-Fixture wurde für 0.26.0/v0026-r1 neu erzeugt und verifiziert.
+PASS  Die Master-Quell-Allowlist akzeptiert neben proxy-01 ausschließlich die
+      dedizierte MCP-Quellinstanz mcp-controller-01 im bestehenden
+      source.service=proxy-Vertrag.
+PASS  Mirror-Snapshots werden vor Persistenz durch die gemeinsame Contract-
+      und Type-Authority in die kanonische Node-V9-/Cross-V8-Storage-Form
+      projiziert.
+
+NICHT ERNEUT LIVE AUSGEFÜHRT:
+      sechs laufende Compose-Dienste, MQTT, PostgreSQL-Replikation,
+      Worker-Mirror-Konvergenz und Master-Stabilität unter realer Last.
+      Frühere v0025-Live-Evidenz bleibt historisch dokumentiert; v0026 muss
+      diese Abnahme auf dem Zielhost reproduzieren.

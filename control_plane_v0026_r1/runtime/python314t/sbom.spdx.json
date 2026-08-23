@@ -1,0 +1,49 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "automation-python-free-threaded-3.14.6-v14",
+  "documentNamespace": "https://automation.invalid/spdx/python314t/3.14.6-v14",
+  "creationInfo": {
+    "created": "2026-07-16T00:00:00Z",
+    "creators": ["Tool: release-manifest"]
+  },
+  "packages": [
+    {
+      "name": "CPython",
+      "SPDXID": "SPDXRef-CPython",
+      "versionInfo": "3.14.6 free-threaded",
+      "downloadLocation": "https://www.python.org/ftp/python/3.14.6/Python-3.14.6.tar.xz",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "143b1dddefaec3bd2e21e3b839b34a2b7fb9842272883c576420d605e9f30c63"
+        }
+      ],
+      "filesAnalyzed": false,
+      "licenseConcluded": "PSF-2.0",
+      "licenseDeclared": "PSF-2.0"
+    },
+    {
+      "name": "libpq",
+      "SPDXID": "SPDXRef-Libpq",
+      "versionInfo": "Debian bookworm libpq-dev/libpq5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "PostgreSQL",
+      "licenseDeclared": "PostgreSQL"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-CPython"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Libpq"
+    }
+  ]
+}

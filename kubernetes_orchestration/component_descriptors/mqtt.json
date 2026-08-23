@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "mqtt",
+  "providers": ["docker_compose", "kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": [], "hard_runtime": [], "soft_runtime": [], "management": [], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["network-policy", "persistent-storage"]},
+  "health_contract": {"mode": "mqtt-sys-uptime", "port": 8883},
+  "rollback_contract": {"application_reversible": true, "data_reversible": false},
+  "security_contract": {"mutual_tls": true, "anonymous": false, "read_only_root_filesystem": true, "capabilities_drop_all": true}
+}

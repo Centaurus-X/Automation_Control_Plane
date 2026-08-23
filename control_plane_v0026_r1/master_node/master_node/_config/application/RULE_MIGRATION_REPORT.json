@@ -1,0 +1,272 @@
+{
+  "active_rule_ids": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    10,
+    11
+  ],
+  "ambiguous_process_owner_ids": [
+    "6"
+  ],
+  "config_format_version": 9,
+  "entity_count": 198,
+  "global_fingerprint": "ea6df81e096e1a30a3be061f00a1fbf96b931ad5c78ff3dd7d7355e93d4cd2fa",
+  "migration_required_rule_ids": [
+    5,
+    7,
+    8,
+    9,
+    13,
+    15,
+    17
+  ],
+  "production_safety_blockers": [
+    13,
+    15,
+    17
+  ],
+  "profile": "lab_v2",
+  "release": "automation_control_plane_release_v0026_r1",
+  "roundtrip_ok": true,
+  "rules": [
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747"
+      ],
+      "deployment_status": "active_node",
+      "owner_node_ids": [
+        "fn-01"
+      ],
+      "reason": "verified_graph_projection",
+      "rule_id": 1,
+      "source_scope": "local_controller"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747"
+      ],
+      "deployment_status": "active_node",
+      "owner_node_ids": [
+        "fn-01"
+      ],
+      "reason": "verified_graph_projection",
+      "rule_id": 2,
+      "source_scope": "local_controller"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "active_cross",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "verified_graph_projection",
+      "rule_id": 3,
+      "source_scope": "cross_worker"
+    },
+    {
+      "controller_uuids": [
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "active_node",
+      "owner_node_ids": [
+        "fn-02"
+      ],
+      "reason": "verified_graph_projection",
+      "rule_id": 4,
+      "source_scope": "local_controller"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335"
+      ],
+      "deployment_status": "disabled_with_reason",
+      "owner_node_ids": [
+        "fn-01"
+      ],
+      "reason": "migration_required",
+      "rule_id": 5,
+      "source_scope": "cross_controller"
+    },
+    {
+      "controller_uuids": [
+        "82fb9eb0-3fd9-5db5-a04e-7f06e405cfdf",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "active_cross",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "verified_graph_projection",
+      "rule_id": 6,
+      "source_scope": "cross_worker"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "disabled_with_reason",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "migration_required",
+      "rule_id": 7,
+      "source_scope": "cross_worker"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "disabled_with_reason",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "migration_required",
+      "rule_id": 8,
+      "source_scope": "cross_worker"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "disabled_with_reason",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "migration_required",
+      "rule_id": 9,
+      "source_scope": "cross_worker"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747"
+      ],
+      "deployment_status": "active_node",
+      "owner_node_ids": [
+        "fn-01"
+      ],
+      "reason": "verified_graph_projection",
+      "rule_id": 10,
+      "source_scope": "local_controller"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747"
+      ],
+      "deployment_status": "active_node",
+      "owner_node_ids": [
+        "fn-01"
+      ],
+      "reason": "verified_graph_projection",
+      "rule_id": 11,
+      "source_scope": "local_controller"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "82fb9eb0-3fd9-5db5-a04e-7f06e405cfdf",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "disabled_with_reason",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "migration_required",
+      "rule_id": 13,
+      "source_scope": "cross_worker"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "disabled_with_reason",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "migration_required",
+      "rule_id": 15,
+      "source_scope": "cross_worker"
+    },
+    {
+      "controller_uuids": [
+        "62671112-766c-59ed-b0ff-30a49d48f747",
+        "82fb9eb0-3fd9-5db5-a04e-7f06e405cfdf",
+        "cded47f3-4dc5-5439-9aa6-73f0fff5e335",
+        "d11032fa-33db-56de-a4ed-7e16cca3ded7"
+      ],
+      "deployment_status": "disabled_with_reason",
+      "owner_node_ids": [
+        "fn-01",
+        "fn-02"
+      ],
+      "reason": "migration_required",
+      "rule_id": 17,
+      "source_scope": "cross_worker"
+    }
+  ],
+  "scopes": [
+    {
+      "execution_epoch": 1,
+      "fingerprint": "fa9905c41b9cbe4c791ccfa4e37987d12e96040c3c6baa2f23cabee7044a60ea",
+      "owner_node_id": "fn-01",
+      "rule_ids": [
+        3,
+        6
+      ],
+      "scope": "cross:fn-01.default",
+      "scope_kind": "cross",
+      "scope_revision": 1
+    },
+    {
+      "execution_epoch": 1,
+      "fingerprint": "0767595845b1c8f86e2ad687a7b9e19be5a4f5d5c0e27fe64d41f6464517bf31",
+      "owner_node_id": "fn-01",
+      "rule_ids": [
+        1,
+        2,
+        10,
+        11
+      ],
+      "scope": "node:fn-01",
+      "scope_kind": "node",
+      "scope_revision": 1
+    },
+    {
+      "execution_epoch": 1,
+      "fingerprint": "61e21d9bcea2a5cbdc03d98f0fad24f1bc725c218c4e508237e3cefae78011f3",
+      "owner_node_id": "fn-02",
+      "rule_ids": [
+        4
+      ],
+      "scope": "node:fn-02",
+      "scope_kind": "node",
+      "scope_revision": 1
+    }
+  ],
+  "source_fixture": "_legacy/initial_config.json",
+  "target_fixture": "initial_config_v9.json",
+  "type_status": "OK"
+}

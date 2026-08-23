@@ -1,0 +1,6 @@
+secrets/
+test-pki/
+proxy_gateway/_runtime/
+**/__pycache__/
+*.py[cod]
+*.zip

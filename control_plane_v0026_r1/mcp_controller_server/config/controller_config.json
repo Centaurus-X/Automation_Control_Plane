@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "server": {
+    "name": "automation-mcp-controller-server",
+    "instance_id": "mcp-controller-01"
+  },
+  "http": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "path": "/mcp",
+    "allowed_origins": [],
+    "max_body_bytes": 1048576,
+    "auth_file": "/run/secrets/mcp_auth",
+    "request_limit_per_minute": 120,
+    "ready_requires_mqtt": true
+  },
+  "mqtt": {
+    "enabled": true,
+    "required": true,
+    "host": "mqtt-broker",
+    "port": 8883,
+    "keepalive_s": 30,
+    "connect_timeout_s": 5.0,
+    "socket_timeout_s": 2.0,
+    "reconnect_min_s": 1.0,
+    "reconnect_max_s": 30.0,
+    "outbound_queue_maxsize": 4096,
+    "message_queue_maxsize": 1024,
+    "max_packet_size": 4194304,
+    "max_pending_requests": 256,
+    "command_timeout_s": 10.0,
+    "retry_interval_s": 2.0,
+    "site_id": "site-main",
+    "source_service": "proxy",
+    "source_instance_id": "mcp-controller-01",
+    "master_instance_id": "master-01",
+    "allow_insecure_transport": false,
+    "tls": {
+      "enabled": true,
+      "ca_file": "/run/secrets/mqtt_ca",
+      "cert_file": "/run/secrets/mcp_mqtt_cert",
+      "key_file": "/run/secrets/mcp_mqtt_key",
+      "server_hostname": "mqtt-broker",
+      "insecure_skip_verify": false
+    }
+  },
+  "policy": {
+    "allowed_tools": [],
+    "mutations_enabled": true,
+    "mutation_actions": [
+      "config.propose",
+      "actuator.request",
+      "node.drain",
+      "node.state.set"
+    ],
+    "approval_mode": "external",
+    "approval_ttl_s": 300,
+    "max_approval_plans": 10000,
+    "event_cache_size": 5000,
+    "sensor_cache_size": 5000,
+    "state_db": "/app/state/controller.sqlite3",
+    "audit_log": "/app/state/audit.jsonl"
+  },
+  "stdio": {
+    "principal": {
+      "subject": "mcp:local-stdio",
+      "permissions": [
+        "node.read",
+        "config.read",
+        "operation.read"
+      ],
+      "site_scopes": [
+        "site-main"
+      ],
+      "resource_scopes": []
+    }
+  }
+}

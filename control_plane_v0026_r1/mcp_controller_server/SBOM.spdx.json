@@ -1,0 +1,75 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "automation-mcp-controller-server-0.1.0",
+  "documentNamespace": "https://automation.invalid/spdx/mcp-controller-server/0.1.0/v0001-r1",
+  "creationInfo": {
+    "created": "2026-08-12T00:00:00Z",
+    "creators": ["Tool: mcp-controller-release-builder-v1"]
+  },
+  "packages": [
+    {
+      "name": "automation-mcp-controller-server",
+      "SPDXID": "SPDXRef-Package-MCPController",
+      "versionInfo": "0.1.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "uvicorn",
+      "SPDXID": "SPDXRef-Package-Uvicorn",
+      "versionInfo": "0.51.0",
+      "downloadLocation": "https://pypi.org/project/uvicorn/0.51.0/",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "click",
+      "SPDXID": "SPDXRef-Package-Click",
+      "versionInfo": "8.2.1",
+      "downloadLocation": "https://pypi.org/project/click/8.2.1/",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "name": "h11",
+      "SPDXID": "SPDXRef-Package-H11",
+      "versionInfo": "0.16.0",
+      "downloadLocation": "https://pypi.org/project/h11/0.16.0/",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-MCPController"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-MCPController",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-Uvicorn"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Uvicorn",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-Click"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Uvicorn",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-H11"
+    }
+  ]
+}

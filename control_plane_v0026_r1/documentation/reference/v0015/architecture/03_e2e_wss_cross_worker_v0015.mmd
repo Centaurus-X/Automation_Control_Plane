@@ -1,0 +1,62 @@
+sequenceDiagram
+    autonumber
+    participant C as E2E v0015 Client
+    participant E as WSS /ws/v1/events :8443
+    participant X as WSS /ws/v1/control :8443
+    participant P as Proxy Core
+    participant B as Mosquitto MQTTS
+    participant M as Master
+    participant W1 as Worker fn-01 + Cross Runtime
+    participant S2 as fn-02 Protocol Simulator
+
+    C->>E: connect + Bearer + subscribe(filters, replay cursor)
+    E-->>C: subscription.accepted
+    C->>X: connect + Bearer
+    X-->>C: connection.ready
+    C->>X: command.request(nodes.list / config.get)
+    X->>P: shared dispatcher
+    P->>B: fixed Master command
+    B->>M: MQTTS command
+    M-->>B: ACK / result
+    B-->>P: validated result
+    P-->>X: command.accepted + command.result
+    X-->>C: correlated response
+
+    C->>X: command.request(actuator.request fn-01)
+    X->>P: validate + audit + idempotency
+    P->>B: actuator.request
+    B->>M: route to owner
+    M->>B: distributed.actuator.execute
+    B->>W1: execute
+    W1-->>B: hardware readback
+    B-->>M: operation result
+    M-->>B: operation.result
+    B-->>P: event
+    P-->>E: filtered durable event
+    E-->>C: CONFIRMED
+
+    Note over W1,S2: Cross-Worker simulation, not Cross-Site
+    Note over W1: external test launcher enabled Cross runtime; Worker package unchanged
+    S2->>B: fn-02 registration + capabilities
+    B->>M: validated registration
+    M-->>B: admission decision APPROVED
+    B-->>S2: admission state APPROVED
+    M->>B: node:fn-02 Full rollout
+    B->>S2: distributed.config.apply
+    S2-->>B: exact fingerprint Apply-ACK
+    B-->>M: rollout ACK
+    S2->>B: heartbeat with replica revision/fingerprint
+    B->>M: convergent fn-02 heartbeat
+    M->>B: cross:fn-01.default rollout
+    B->>W1: Cross shard
+    W1-->>B: Cross convergence
+    W1->>B: remote actuator intent for fn-02
+    B->>M: fenced Cross intent
+    M->>B: execute on owner fn-02
+    B->>S2: simulated actuator.execute
+    S2-->>B: simulation=true + deterministic readback
+    B-->>M: result
+    M-->>B: operation.result
+    B-->>P: event
+    P-->>E: Cross result
+    E-->>C: CONFIRMED + simulation marker

@@ -1,0 +1,9 @@
+enabled: true
+mode: external
+external:
+  host: postgresql.example.invalid
+  port: 5432
+  database: automation_platform
+service:
+  name: automation-postgres
+  annotations: {}

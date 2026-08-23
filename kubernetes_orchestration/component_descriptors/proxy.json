@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "component_id": "proxy",
+  "providers": ["docker_compose", "kubernetes_helm", "gitops_argocd", "gitops_flux"],
+  "dependencies": {"hard_deploy": ["postgresql", "mqtt"], "hard_runtime": ["postgresql", "mqtt"], "soft_runtime": ["master"], "management": [], "observability": ["observability"]},
+  "placement_contract": {"required_capabilities": ["network-policy", "persistent-storage"]},
+  "health_contract": {"live": "/api/v1/health/live", "ready": "/api/v1/health/ready", "metrics": "/metrics", "ports": [8443, 8444]},
+  "rollback_contract": {"application_reversible": true, "database_reversible": false},
+  "security_contract": {"tls_required": true, "read_only_root_filesystem": true, "capabilities_drop_all": true, "replicas_max": 1}
+}

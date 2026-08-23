@@ -1,0 +1,27 @@
+flowchart LR
+    People["Operator · Approver<br/>Auditor · Viewer"] --> Fleet["Fleet Orchestration<br/>Plan v2 · Placement · Approval<br/>Saga · Audit · Evidence"]
+
+    Fleet --> Helm["Direct Helm"]
+    Fleet --> GitOps["Argo CD / Flux"]
+    Fleet <-->|"signed outbound tasks<br/>lease · epoch · HMAC"| Agent["Cluster Agent"]
+
+    Helm --> K8s["Kubernetes Namespace"]
+    GitOps --> K8s
+    Agent --> K8s
+
+    K8s --> Proxy["Proxy Gateway"]
+    K8s --> Master["Master<br/>registry · relay · mirror · audit"]
+    K8s --> MCP["MCP Controller"]
+    K8s --> Broker["MQTTS Broker"]
+    K8s --> DB[("PostgreSQL")]
+
+    Proxy --> Master
+    MCP --> Broker
+    Master <--> Broker
+    Master <--> DB
+    Proxy <--> DB
+
+    Broker <--> Worker["Owning Worker<br/>SEM · Safety · Node Authority"]
+    Worker <--> Field["PLC · Fieldbus<br/>Sensors · Actuators"]
+
+    Fleet -.->|"deploys and observes<br/>never controls hardware"| Worker

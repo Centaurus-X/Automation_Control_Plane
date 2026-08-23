@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "automation.proxy.websocket.v1/event_response.schema.json",
+  "title": "Automation Proxy WSS event endpoint responses",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "type", "request_id", "filters", "generation"],
+      "properties": {
+        "protocol": {"const": "automation.proxy.websocket.v1"},
+        "type": {"const": "subscription.accepted"},
+        "request_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+        "client_id": {"type": "string", "format": "uuid"},
+        "filters": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["resource_type", "resource_pattern"],
+            "properties": {
+              "resource_type": {"type": "string"},
+              "resource_pattern": {"type": "string"}
+            }
+          }
+        },
+        "generation": {"type": "integer", "minimum": 0},
+        "replay_high_watermark": {"type": "integer", "minimum": 0}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "type", "request_id", "code"],
+      "properties": {
+        "protocol": {"const": "automation.proxy.websocket.v1"},
+        "type": {"const": "subscription.rejected"},
+        "request_id": {"type": ["string", "null"]},
+        "code": {"type": "string", "minLength": 1, "maxLength": 128},
+        "message": {"type": ["string", "null"], "maxLength": 1024}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "type", "code"],
+      "properties": {
+        "protocol": {"const": "automation.proxy.websocket.v1"},
+        "type": {"const": "replay.resync_required"},
+        "code": {"const": "replay_resync_required"}
+      }
+    }
+  ]
+}

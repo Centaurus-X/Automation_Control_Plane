@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "central_url": "https://fleet.example.invalid",
+  "target_id": "cluster-lab-01",
+  "cluster_id": "cluster-lab-01",
+  "holder_id": "cluster-agent-local",
+  "namespace": "automation-system",
+  "lease_name": "automation-cluster-agent",
+  "lease_ttl_s": 30,
+  "poll_interval_s": 2,
+  "token_file": "/run/secrets/agent.token",
+  "capabilities": ["helm-v3", "network-policy", "persistent-storage"]
+}
